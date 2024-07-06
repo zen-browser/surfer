@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { log } from '../log'
 
-export const BIN_NAME = 'gluon'
+export const BIN_NAME = 'surfer'
 
 export const BUILD_TARGETS = ['linux', 'windows', 'macos']
 export const ARCHITECTURE = ['i686', 'x86_64']
@@ -28,7 +28,7 @@ export const PATCHES_DIR = resolve(
 )
 export const COMMON_DIR = resolve(process.cwd(), 'common')
 export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
-export const MELON_DIR = resolve(process.cwd(), '.gluon')
+export const MELON_DIR = resolve(process.cwd(), '.surfer')
 export const MELON_TMP_DIR = resolve(MELON_DIR, 'engine')
 export const DIST_DIR = resolve(process.cwd(), 'dist')
 

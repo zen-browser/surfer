@@ -108,7 +108,7 @@ testing/
 site/
 
 docs/public/
-.gluon
+.surfer
 
 # Patch generation
 .moz-central

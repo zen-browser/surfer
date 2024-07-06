@@ -7,7 +7,7 @@ export interface Cmd {
 
   /**
    * A function that returns the controller as a promise. We want to dynamically
-   * load them to reduce the startup time of gluon, which, at the time of
+   * load them to reduce the startup time of surfer, which, at the time of
    * writing, is getting a touch long
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

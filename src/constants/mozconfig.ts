@@ -1,7 +1,7 @@
 import { config } from '..'
 
 const otherBuildModes = `# You can change to other build modes by running:
-#   $ gluon set buildMode [dev|debug|release]`
+#   $ surfer set buildMode [dev|debug|release]`
 
 const platformOptimize = getPlatformOptimiseFlags()
 
@@ -38,7 +38,7 @@ ${platformOptimize} # Taken from waterfox`
 
   return `
 # =====================
-# Internal gluon config
+# Internal surfer config
 # =====================
 
 ${buildOptions}

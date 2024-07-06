@@ -17,7 +17,7 @@ import { log } from './log'
 // We have to use a dynamic require here, otherwise the typescript compiler
 // mucks up the directory structure
 // eslint-disable-next-line @typescript-eslint/no-var-requires, unicorn/prefer-module
-const { version: gluonVersion } = require('../package.json')
+const { version: surferVersion } = require('../package.json')
 
 export const config = configInited
 
@@ -61,7 +61,7 @@ program
           reportedFFVersion ? `(being reported as ${reportedFFVersion})` : ''
         }`,
       },
-      { name: 'Gluon', value: gluonVersion },
+      { name: 'Gluon', value: surferVersion },
       reportedFFVersion
         ? `Mismatch detected between expected Firefox version and the actual version.\nYou may have downloaded the source code using a different version and\nthen switched to another branch.`
         : '',

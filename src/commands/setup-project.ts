@@ -158,7 +158,7 @@ export async function setupProject(): Promise<void> {
     }
 
     gitignoreContents +=
-      '\n.dotbuild/\n.gluon/\nengine/\nfirefox-*/\nnode_modules/\n'
+      '\n.dotbuild/\n.surfer/\nengine/\nfirefox-*/\nnode_modules/\n'
 
     writeFileSync(gitignore, gitignoreContents)
 
@@ -166,7 +166,7 @@ export async function setupProject(): Promise<void> {
       'Project setup complete!',
       '',
       `You can start downloading the Firefox source code by running |${BIN_NAME} download|`,
-      'Or you can follow the getting started guide at https://docs.gluon.dev/getting-started/overview/'
+      'Or you can follow the getting started guide at https://docs.surfer.dev/getting-started/overview/'
     )
   } catch (error) {
     log.error(error)

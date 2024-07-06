@@ -9,7 +9,7 @@ Lets take a look at the file structure of your project. It should look something
 
 ```filesystem
 ├─  .gitignore
-├─  gluon.json
+├─  surfer.json
 ├─  configs
 │   ├─  common
 │   │   └─  mozconfig
@@ -44,7 +44,7 @@ Lets take a look at the file structure of your project. It should look something
 │           └─  windows
 │               ├─  browser-css.patch
 │               └─  jar-mn.patch
-├─  .gluon
+├─  .surfer
 │   └─  ...
 └─  engine
     └─  ...
@@ -52,16 +52,16 @@ Lets take a look at the file structure of your project. It should look something
 
 Whilst this may seem large (especially if you look inside of the `engine`) directory, it is all fairly manageable.
 
-## gluon.json
+## surfer.json
 
-The primary configuration file for your project is the `gluon.json` file. This is where you will put information about your browser so Gluon can build it correctly. It should look something like this:
+The primary configuration file for your project is the `surfer.json` file. This is where you will put information about your browser so Gluon can build it correctly. It should look something like this:
 
 ```json
 {
   "name": "Gluon Example Browser",
   "vendor": "Fushra",
-  "appId": "dev.gluon.example",
-  "binaryName": "gluon-example-browser",
+  "appId": "dev.surfer.example",
+  "binaryName": "surfer-example-browser",
 
   "version": {
     "product": "firefox",
@@ -109,9 +109,9 @@ This directory is also where you would put [branding assets for your browser](/g
 
 ## src/
 
-The source folder contains all of the modifications that you have made to Firefox. These come in two types, inserted files (and folders) and patches. Both of these are applied using the `gluon import` command.
+The source folder contains all of the modifications that you have made to Firefox. These come in two types, inserted files (and folders) and patches. Both of these are applied using the `surfer import` command.
 
-Inserted files are just files (and folders) that you have inserted into the Firefox source code. These will overwrite existing files if they already exist. On Linux and MacOS, these are symlinked so when you change a file in `src/`, the change will be mirrored in Firefox's source code instantly. On Windows, you will need to run `gluon import` for these changes to apply.
+Inserted files are just files (and folders) that you have inserted into the Firefox source code. These will overwrite existing files if they already exist. On Linux and MacOS, these are symlinked so when you change a file in `src/`, the change will be mirrored in Firefox's source code instantly. On Windows, you will need to run `surfer import` for these changes to apply.
 
 Patches are changes to Firefox's files. As a rule of thumb, you should prefer splitting new content into a new file rather than using patches, but there are times when you must modify Firefox's source code. Each of these patch files are just git patch files:
 
@@ -131,15 +131,15 @@ index 404a88b218c652afac0cb2004676d22da53d48f3..5a4668ef2970dd773536907f51f3e7e7
    skin/classic/browser/monitor-border.png
 ```
 
-In this patch, you can see that I am adding a `*` to the start of a line. You generate these patches by modifying the file in the `engine/` directory and running `gluon export` to export your changes to the src directory. Be careful, if you do not export your changes, they will not be saved and will not work on other developers' computers or yours after an update!
+In this patch, you can see that I am adding a `*` to the start of a line. You generate these patches by modifying the file in the `engine/` directory and running `surfer export` to export your changes to the src directory. Be careful, if you do not export your changes, they will not be saved and will not work on other developers' computers or yours after an update!
 
 ```sh
-gluon export browser/themes/linux/jar.mn
+surfer export browser/themes/linux/jar.mn
 ```
 
 ## engine/
 
-The engine directory contains all of Firefox's source code. It is massive - around 15GB in size (around 11GB of that are build assets from when you run `gluon build`). I am not able to provide a full explanation of the contents of the directory.
+The engine directory contains all of Firefox's source code. It is massive - around 15GB in size (around 11GB of that are build assets from when you run `surfer build`). I am not able to provide a full explanation of the contents of the directory.
 
 However, most of the changes you will want to make will be in `engine/browser/`, which contains the source code for the browser's UI. Here are some of the important directories inside of the `engine/browser/` directory:
 

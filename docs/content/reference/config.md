@@ -1,11 +1,11 @@
 +++
-title = "`gluon.json` Reference"
+title = "`surfer.json` Reference"
 weight = 0
 +++
 
-# gluon.json Reference
+# surfer.json Reference
 
-This reference guide may get outdated. If you need to check something, you can read [the config interface type](https://github.com/pulse-browser/gluon/blob/main/src/utils/config.ts#L96).
+This reference guide may get outdated. If you need to check something, you can read [the config interface type](https://github.com/zen-browser/surfer/blob/main/src/utils/config.ts#L96).
 
 ## name
 
@@ -43,7 +43,7 @@ The name of the output binary.
 
 ```json
 {
-  "binaryName": "pulse-browser"
+  "binaryName": "zen-browser"
 }
 ```
 
@@ -97,13 +97,13 @@ Example:
 Commands that maybe used:
 
 ```sh
-gluon license-check
-gluon lc # Alias
+surfer license-check
+surfer lc # Alias
 ```
 
 ## version
 
-Provides information to gluon about the product and version that Gluon is responsible for managing.
+Provides information to surfer about the product and version that Gluon is responsible for managing.
 
 Specification:
 
@@ -153,7 +153,7 @@ When set to `true`, symbolic links will be enabled on Windows. From internal tes
 
 ## addons
 
-An index for each addon. These will be downloaded and configured as part of the `download` step that gluon performs. You can download extensions from AMO, Github or any URL. Note that the furha-robot will only be able to provide update checking to AMO and Github Extensions.
+An index for each addon. These will be downloaded and configured as part of the `download` step that surfer performs. You can download extensions from AMO, Github or any URL. Note that the furha-robot will only be able to provide update checking to AMO and Github Extensions.
 
 Specification:
 
@@ -210,8 +210,8 @@ Example:
 Commands that use this:
 
 ```sh
-gluon download
-gluon updates-addons # Generates update manifests for addons
+surfer download
+surfer updates-addons # Generates update manifests for addons
 ```
 
 ## brands
@@ -261,7 +261,7 @@ Example:
       "release": {
         "displayVersion": "1.0.0",
         "github": {
-          "repo": "pulse-browser/browser"
+          "repo": "zen-browser/desktop"
         },
         "x86": {
           "windowsMar": "windows.mar",
@@ -278,7 +278,7 @@ Example:
       "release": {
         "displayVersion": "1.0.0-b.0",
         "github": {
-          "repo": "pulse-browser/browser"
+          "repo": "zen-browser/desktop"
         },
         "x86": {
           "windowsMar": "windows.mar",
@@ -295,7 +295,7 @@ Example:
       "release": {
         "displayVersion": "1.0.0-a.16",
         "github": {
-          "repo": "pulse-browser/browser"
+          "repo": "zen-browser/desktop"
         },
         "x86": {
           "windowsMar": "windows.mar",
@@ -311,8 +311,8 @@ Example:
 Commands:
 
 ```sh
-gluon build
-gluon package
-gluon updates-browser
-gluon set brand <brand_name>
+surfer build
+surfer package
+surfer updates-browser
+surfer set brand <brand_name>
 ```

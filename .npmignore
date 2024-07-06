@@ -8,12 +8,12 @@ site/
 tests/
 
 .prettierrc.json
-gluon.json
+surfer.json
 tsconfig.json
 yarn.lock
 .eslintignore
 .eslintrc.json
-.gluon
+.surfer
 .vscode/
 .github/
 .eslintrc.js

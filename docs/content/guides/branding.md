@@ -9,7 +9,7 @@ Before you ship your browser, you will want to include your own branding, rather
 
 ## Creating a brand
 
-You will first need to add a `brands` key within your `gluon.json`. For example:
+You will first need to add a `brands` key within your `surfer.json`. For example:
 
 ```json
 {
@@ -30,18 +30,18 @@ More information regarding the available keys for this config object can be foun
 
 You will then need to create the folder `config/branding/<brand_name>`. In here, you will need to add a high-resolution `logo.png` (which will then be downscaled on import) and a `MacOSInstaller.svg` file, which will be used as the background for the macOS dmg file.
 
-When you add or change a brand, you will need to reimport your changes and specify the brand to target using `gluon set brand`.
+When you add or change a brand, you will need to reimport your changes and specify the brand to target using `surfer set brand`.
 
 ## Specifying which brand to target
 
-You can specify the brand that you want to build for using the `gluon set brand <brand_name>` command. For example:
+You can specify the brand that you want to build for using the `surfer set brand <brand_name>` command. For example:
 
 ```sh
-gluon set brand stable
+surfer set brand stable
 ```
 
 Note that once you have set a new brand, you will need to rebuild your browser for changes to take effect:
 
 ```sh
-gluon build
+surfer build
 ```

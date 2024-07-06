@@ -12,7 +12,7 @@ import { BIN_NAME } from '../constants'
 import { log } from '../log'
 
 export const projectDirectory = process.cwd()
-export const configPath = join(projectDirectory, 'gluon.json')
+export const configPath = join(projectDirectory, 'surfer.json')
 
 let hasWarnedAboutConfig = false
 
@@ -158,7 +158,7 @@ export const defaultLicenseConfig: LicenseConfig = {
 }
 
 export const defaultConfig: Config = {
-  name: 'Unknown gluon build',
+  name: 'Unknown surfer build',
   vendor: 'Unknown',
   appId: 'unknown.appid',
   binaryName: 'firefox',
