@@ -1,9 +1,8 @@
 {
   "name": "@zen-browser/surfer",
   "version": "1.0.0",
-  "description": "🍉 Build Firefox-based browsers with ease",
+  "description": "Simplifying building firefox forks!",
   "main": "index.js",
-  "reveal": true,
   "bin": {
     "surfer": "./dist/index.js"
   },
