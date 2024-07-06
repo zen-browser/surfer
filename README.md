@@ -33,4 +33,3 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ### Firefox
 
 This program downloads and modifies Firefox. [Follow their license](https://hg.mozilla.org/mozilla-central/file/tip/LICENSE) when distributing your program.
-

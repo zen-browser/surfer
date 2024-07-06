@@ -9,20 +9,20 @@
   #search {
     width: 100%;
     display: block;
-    border:none;
+    border: none;
     border-left: 1px solid $color;
-    padding:1px 0;
+    padding: 1px 0;
     text-align: left;
     line-height: $baseline;
     font-size: $font-size;
-    font-family:$font-family;
-    color:$color;
-    background:transparent;
+    font-family: $font-family;
+    color: $color;
+    background: transparent;
   }
 
   #search:focus {
-    outline:none;
-    border:none;
+    outline: none;
+    border: none;
   }
 
   .search-results {
@@ -42,7 +42,6 @@
     }
 
     &__teaser {
-     
     }
   }
 }

@@ -88,7 +88,13 @@ async function writeUpdateFileToDisk(
   channel: string,
   updateObject: {
     updates: {
-      update: Record<string, string | number | Record<string, string | number | undefined> | undefined>
+      update: Record<
+        string,
+        | string
+        | number
+        | Record<string, string | number | undefined>
+        | undefined
+      >
     }
   }
 ) {

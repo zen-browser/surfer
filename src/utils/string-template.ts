@@ -14,7 +14,10 @@ export function stringTemplate(
     // Replace only replaces the first instance of a string. We want to
     // replace all instances
     while (temporary.includes(`\${${variable}}`)) {
-      temporary = temporary.replace(`\${${variable}}`, variables[variable].toString())
+      temporary = temporary.replace(
+        `\${${variable}}`,
+        variables[variable].toString()
+      )
     }
   }
 

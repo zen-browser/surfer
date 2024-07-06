@@ -70,7 +70,7 @@ export const commands: Cmd[] = [
       {
         arg: '--force',
         description: 'Delete the engine directory if it already exists',
-      }
+      },
     ],
     requestController: async () =>
       (await import('./commands/download')).download,
@@ -79,8 +79,7 @@ export const commands: Cmd[] = [
     cmd: 'update',
     aliases: ['update-ff'],
     description: 'Update Firefox to latest version.',
-    requestController: async () =>
-      (await import('./commands/update')).update,
+    requestController: async () => (await import('./commands/update')).update,
     disableMiddleware: true,
   },
   {

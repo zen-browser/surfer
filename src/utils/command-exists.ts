@@ -114,5 +114,7 @@ function cleanInput(toBeCleaned: string): string {
 
 export function commandExistsSync(commandName: string): boolean {
   const cleanedCommandName = cleanInput(commandName)
-  return onWindows ? commandExistsWindowsSync(commandName, cleanedCommandName) : commandExistsUnixSync(commandName, cleanedCommandName);
+  return onWindows
+    ? commandExistsWindowsSync(commandName, cleanedCommandName)
+    : commandExistsUnixSync(commandName, cleanedCommandName)
 }

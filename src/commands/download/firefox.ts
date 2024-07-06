@@ -112,7 +112,13 @@ async function downloadFirefoxSource(version: string) {
   return filename
 }
 
-export async function downloadInternals({ version, force }: { version: string, force?: boolean }) {
+export async function downloadInternals({
+  version,
+  force,
+}: {
+  version: string
+  force?: boolean
+}) {
   // Provide a legible error if there is no version specified
   if (!version) {
     log.error(
@@ -127,7 +133,9 @@ export async function downloadInternals({ version, force }: { version: string, f
   }
 
   // If the engine directory is empty, we should delete it.
-  const engineIsEmpty = existsSync(ENGINE_DIR) && await readdir(ENGINE_DIR).then((files) => files.length === 0)
+  const engineIsEmpty =
+    existsSync(ENGINE_DIR) &&
+    (await readdir(ENGINE_DIR).then((files) => files.length === 0))
   if (engineIsEmpty) {
     log.info("'engine/' is empty, it...")
     rmSync(ENGINE_DIR, { recursive: true })

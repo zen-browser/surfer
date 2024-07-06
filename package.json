@@ -1,6 +1,6 @@
 {
   "name": "@zen-browser/surfer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simplifying building firefox forks!",
   "main": "index.js",
   "bin": {
@@ -27,8 +27,7 @@
     "firefox-fork",
     "build-tool"
   ],
-  "authors": [
-  ],
+  "authors": [],
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/zen-browser/surfer/issues"

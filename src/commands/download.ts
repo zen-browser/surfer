@@ -4,9 +4,7 @@
 
 import { bin_name, config } from '..'
 import { log } from '../log'
-import {
-  downloadInternals
-} from './download/firefox'
+import { downloadInternals } from './download/firefox'
 
 type Options = {
   force?: boolean
@@ -23,7 +21,7 @@ export const download = async (options: Options): Promise<void> => {
     process.exit(1)
   }
 
-  await downloadInternals({version, force: options.force})
+  await downloadInternals({ version, force: options.force })
 
   log.success(
     `You should be ready to make changes to ${config.name}.`,
