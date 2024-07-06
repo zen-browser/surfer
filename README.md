@@ -24,7 +24,7 @@ The following is included in good faith. The writer is not a lawyer, and this is
 
 ### Gluon and Melon
 
-Surfer is a fork of [Gluon](https://github.com/pulse-browser/gluon). Gluon has been extracted from melon, the build tool for the [desktop version of Dot Browser](https://github.com/dothq/browser-desktop) under MPL v2.0.
+Surfer is a fork of [Gluon](https://github.com/pulse-browser/gluon) but the author has stoped working on it. Gluon has been extracted from melon, the build tool for the [desktop version of Dot Browser](https://github.com/dothq/browser-desktop) under MPL v2.0.
 
 This Source Code Form is subject to the terms of the Mozilla Public
 License, v. 2.0. If a copy of the MPL was not distributed with this
