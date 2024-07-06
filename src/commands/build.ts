@@ -35,7 +35,7 @@ const applyConfig = async (os: string) => {
     changeset = stdout.trim()
   } catch (error) {
     log.warning(
-      'Gluon expects that you are building your browser with git as your version control'
+      'Surfer expects that you are building your browser with git as your version control'
     )
     log.warning(
       'If you are using some other version control system, please migrate to git'

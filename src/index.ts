@@ -61,7 +61,7 @@ program
           reportedFFVersion ? `(being reported as ${reportedFFVersion})` : ''
         }`,
       },
-      { name: 'Gluon', value: surferVersion },
+      { name: 'Surfer', value: surferVersion },
       reportedFFVersion
         ? `Mismatch detected between expected Firefox version and the actual version.\nYou may have downloaded the source code using a different version and\nthen switched to another branch.`
         : '',

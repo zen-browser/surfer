@@ -12,7 +12,7 @@ export const status = async (): Promise<void> => {
 
   if (!configExists && !engineExists) {
     log.info(
-      `Gluon doesn't appear to be setup for this project. You can set it up by running |${BIN_NAME} setup-project|`
+      `Surfer doesn't appear to be setup for this project. You can set it up by running |${BIN_NAME} setup-project|`
     )
 
     return
