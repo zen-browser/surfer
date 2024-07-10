@@ -78,7 +78,7 @@ export const FTL_STRING_LINE_REGEX =
 export let BASH_PATH: string | undefined
 
 // All windows specific code should be located inside of this if statement
-if (process.platform == 'win32') {
+if ((process as any).surferOriginalPlatform == 'win32') {
   const gitPath = execa.sync('where.exe git.exe').stdout.toString()
 
   if (gitPath.includes('git.exe')) {

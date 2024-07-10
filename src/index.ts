@@ -1,5 +1,21 @@
 #!/usr/bin/env node
 
+Object.defineProperty(process, 'surferOriginalPlatform', {
+  value: process.platform,
+  writable: false,
+  enumerable: true,
+  configurable: true,
+});
+
+function getPlatform() {
+  if (process.env.SURFER_PLATFORM) {
+    return process.env.SURFER_PLATFORM;
+  }
+  return (process as any).surferOriginalPlatform;
+}
+
+Object.defineProperty(process, 'platform', { value: getPlatform() });
+
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
