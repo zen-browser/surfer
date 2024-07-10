@@ -89,7 +89,7 @@ for (const command of commands) {
   if (
     command.flags &&
     command.flags.platforms &&
-    !command.flags.platforms.includes(process.surferPlatform)
+    !command.flags.platforms.includes((process as any).surferPlatform)
   ) {
     continue
   }

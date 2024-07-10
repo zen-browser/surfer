@@ -163,7 +163,7 @@ export const build = async (options: Options): Promise<void> => {
 
   // Host build
 
-  const prettyHost = platform[process.surferPlatform]
+  const prettyHost = platform[(process as any).surferPlatform]
 
   if (BUILD_TARGETS.includes(prettyHost)) {
     if (!options.skipPatchCheck) await patchCheck()

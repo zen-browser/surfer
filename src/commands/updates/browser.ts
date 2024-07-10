@@ -52,7 +52,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
     return
   }
 
-  switch (process.surferPlatform) {
+  switch ((process as any).surferPlatform) {
     case 'win32': {
       return releaseInfo.x86?.windowsMar
     }
@@ -113,11 +113,11 @@ async function writeUpdateFileToDisk(
 }
 
 function getTargets(): string[] {
-  if (process.surferPlatform == 'win32') {
+  if ((process as any).surferPlatform == 'win32') {
     return ausPlatformsMap.win64
   }
 
-  if (process.surferPlatform == 'linux') {
+  if ((process as any).surferPlatform == 'linux') {
     return ausPlatformsMap.linux64
   }
 
