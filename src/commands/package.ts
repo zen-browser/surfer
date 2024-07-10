@@ -143,7 +143,7 @@ async function createMarFile(version: string, channel: string) {
     join(OBJ_DIR, 'dist/host/bin', 'mar')
   )
 
-  if ((process as any).surferPlatform == 'win32') {
+  if (process.platform == 'win32') {
     marBinary += '.exe'
   }
 
