@@ -59,9 +59,9 @@ export MOZ_APPUPDATE_HOST=${
 }
 
 function getPlatformOptimiseFlags(): string {
-  let optimiseFlags = `# Unknown platform ${process.platform}`
+  let optimiseFlags = `# Unknown platform ${process.surferPlatform}`
 
-  switch (process.platform) {
+  switch (process.surferPlatform) {
     case 'linux': {
       optimiseFlags = `ac_add_options --enable-optimize="-O3 -march=haswell -mtune=haswell -w"`
       break

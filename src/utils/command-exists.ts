@@ -25,7 +25,7 @@ import { execSync } from 'node:child_process'
 import { accessSync, constants } from 'node:fs'
 import path from 'node:path'
 
-const onWindows = (process as any).surferOriginalPlatform == 'win32'
+const onWindows = (process as any).platform == 'win32'
 
 const fileNotExistsSync = (commandName: string): boolean => {
   try {

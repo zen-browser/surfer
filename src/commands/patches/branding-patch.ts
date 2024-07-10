@@ -109,7 +109,7 @@ async function setupImages(configPath: string, outputPath: string) {
   )
 
   // TODO: Custom MacOS icon support
-  if (process.platform == 'darwin') {
+  if (process.surferPlatform == 'darwin') {
     log.debug('Generating Mac Icons')
     const temporary = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
 

@@ -53,7 +53,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   //
   // If BSD tar adds --transform support in the future, we can use that
   // instead
-  if (process.platform == 'darwin') {
+  if (process.surferPlatform == 'darwin') {
     // GNU Tar doesn't come preinstalled on any MacOS machines, so we need to
     // check for it and ask for the user to install it if necessary
     if (!commandExistsSync('gtar')) {
@@ -69,7 +69,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     tarExec,
     [
       '--strip-components=1',
-      process.platform == 'win32' ? '--force-local' : undefined,
+      process.surferPlatform == 'win32' ? '--force-local' : undefined,
       '-xf',
       windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
       '-C',

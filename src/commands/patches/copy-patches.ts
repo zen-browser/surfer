@@ -29,7 +29,7 @@ export const copyManual = async (name: string): Promise<void> => {
   }
 
   if (
-    process.platform == 'win32' &&
+    process.surferPlatform == 'win32' &&
     !config.buildOptions.windowsUseSymbolicLinks
   ) {
     // Make the directory if it doesn't already exist.

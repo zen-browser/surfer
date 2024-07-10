@@ -22,7 +22,7 @@ import { log } from '../log'
  * @returns A unix path
  */
 export const windowsPathToUnix = (path: string): string =>
-  (process as any).surferOriginalPlatform == 'win32' ? path.replace(/\\/g, '/') : path
+  (process as any).platform == 'win32' ? path.replace(/\\/g, '/') : path
 
 export async function walkDirectory(directory: string): Promise<string[]> {
   const output = []

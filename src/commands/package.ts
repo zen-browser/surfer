@@ -69,7 +69,7 @@ export const surferPackage = async () => {
 
   // Windows has some special dist files that are available within the dist
   // directory.
-  if (process.platform == 'win32') {
+  if (process.surferPlatform == 'win32') {
     const installerDistributionDirectory = join(
       OBJ_DIR,
       'dist',
@@ -143,7 +143,7 @@ async function createMarFile(version: string, channel: string) {
     join(OBJ_DIR, 'dist/host/bin', 'mar')
   )
 
-  if (process.platform == 'win32') {
+  if (process.surferPlatform == 'win32') {
     marBinary += '.exe'
   }
 
@@ -151,7 +151,7 @@ async function createMarFile(version: string, channel: string) {
   // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
   // the contents of the folder <obj dir>/dist/${binaryName}
   const binary =
-    process.platform == 'darwin'
+    process.surferPlatform == 'darwin'
       ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
