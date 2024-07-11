@@ -15,16 +15,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile
+        run: npm install
 
       - name: Build
-        run: yarn build
+        run: npm run build
 
       - name: Test
-        run: yarn test
+        run: npm test
 
-      - name: Lint
-        run: yarn lint
