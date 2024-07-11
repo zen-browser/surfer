@@ -72,7 +72,7 @@ function getPlatformOptimiseFlags(): string {
       break
     }
     case 'win32': {
-      optimiseFlags = `ac_add_options --enable-optimize="-O2 -Qvec -w -clang:-ftree-vectorize -clang:-msse3 -clang:-mssse3 -clang:-msse4.1 -clang:-mtune=znver3"`
+      optimiseFlags = `ac_add_options --enable-optimize="-O3 -march=haswell -mtune=haswell -w"`
       break
     }
   }
