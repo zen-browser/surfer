@@ -31,6 +31,7 @@ ac_add_options --disable-optimize`
       buildOptions = `# Release build settings
 ac_add_options --disable-debug
 ac_add_options --enable-optimize
+ac_add_options --enable-rust-simd
 ${platformOptimize} # Taken from waterfox`
       break
     }
@@ -63,7 +64,7 @@ function getPlatformOptimiseFlags(): string {
 
   switch ((process as any).surferPlatform) {
     case 'linux': {
-      optimiseFlags = `ac_add_options --enable-optimize="-O3 -march=haswell -mtune=haswell -w"`
+      optimiseFlags = `ac_add_options --enable-optimize="-O3 -march=nehalem -mtune=znver3 -w"`
       break
     }
     case 'darwin': {
@@ -71,7 +72,7 @@ function getPlatformOptimiseFlags(): string {
       break
     }
     case 'win32': {
-      optimiseFlags = `ac_add_options --enable-optimize="-O2 -Qvec -w -clang:-ftree-vectorize -clang:-msse3 -clang:-mssse3 -clang:-msse4.1 -clang:-mtune=haswell"`
+      optimiseFlags = `ac_add_options --enable-optimize="-O2 -Qvec -w -clang:-ftree-vectorize -clang:-msse3 -clang:-mssse3 -clang:-msse4.1 -clang:-mtune=znver3"`
       break
     }
   }
