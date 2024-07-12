@@ -68,7 +68,7 @@ function getPlatformOptimiseFlags(): string {
       break
     }
     case 'darwin': {
-      optimiseFlags = `ac_add_options --enable-optimize="-O3 -march=nehalem -mtune=haswell -w"`
+      optimiseFlags = `ac_add_options --enable-optimize="-mcpu=apple-m1 -O3 -w"`
       break
     }
     case 'win32': {
