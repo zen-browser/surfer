@@ -26,6 +26,7 @@ const fixableFiles = [
   },
   {
     regex: new RegExp('.*\\.py|moz\\.build|jar\\.mn'),
+    commentOpen: '#\n',
     comment: '# ',
     commentClose: '\n',
   },
