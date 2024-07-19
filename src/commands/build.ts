@@ -87,6 +87,7 @@ const applyConfig = async (os: string) => {
 
   writeFileSync(resolve(ENGINE_DIR, 'mozconfig'), mergedConfig)
 
+  log.info(`Building config based on a ${dynamicConfig.get('buildMode')} mode`)
   log.info(`Config for this \`${os}\` build:`)
 
   mergedConfig.split('\n').map((ln) => {
