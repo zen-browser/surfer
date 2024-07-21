@@ -69,7 +69,6 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     tarExec,
     [
       '--strip-components=1',
-      (process as any).surferPlatform == 'win32' ? '--force-local' : undefined,
       '-xf',
       windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
       '-C',
