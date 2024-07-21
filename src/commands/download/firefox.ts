@@ -74,11 +74,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
       windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
       '-C',
       windowsPathToUnix(ENGINE_DIR),
-    ].filter(Boolean) as string[],
-    {
-      // HACK: Use bash shell on windows to get a sane version of tar that works
-      shell: BASH_PATH || false,
-    }
+    ].filter(Boolean) as string[]
   )
 }
 

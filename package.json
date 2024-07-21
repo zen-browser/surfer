@@ -1,6 +1,6 @@
 {
   "name": "@zen-browser/surfer",
-  "version": "1.0.19",
+  "version": "1.0.21",
   "description": "Simplifying building firefox forks!",
   "main": "index.js",
   "bin": {
