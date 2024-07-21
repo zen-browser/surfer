@@ -70,9 +70,9 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     [
       '--strip-components=1',
       '-xf',
-      windowsPathToUnix(resolve(MELON_TMP_DIR, name)),
+      resolve(MELON_TMP_DIR, name),
       '-C',
-      windowsPathToUnix(ENGINE_DIR),
+      ENGINE_DIR,
     ].filter(Boolean) as string[]
   )
 }
