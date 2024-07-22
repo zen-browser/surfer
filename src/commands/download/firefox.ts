@@ -20,7 +20,7 @@ import {
   resolveAddonDownloadUrl,
   unpackAddon,
 } from './addon'
-import { configPath } from '../../utils'
+import { configPath } from '../../utils';
 
 export function shouldSetupFirefoxSource() {
   return !(
@@ -44,7 +44,6 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacking Firefox...`)
 
   ensureDirectory(ENGINE_DIR)
-
   let tarExec = 'tar'
 
   // On MacOS, we need to use gnu tar, otherwise tar doesn't behave how we
@@ -65,29 +64,21 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     tarExec = 'gtar'
   }
 
-  if (process.platform === 'win32') {
-    tarExec = "7z";
-    await execa(
-      tarExec,
-      [
-        'x',
-        resolve(MELON_TMP_DIR, name),
-        `-o${windowsPathToUnix(ENGINE_DIR)}`,
-        '-y',
-      ].filter(Boolean) as string[]
-    )
-  } else {
-    await execa(
-      tarExec,
-      [
-        '--strip-components=1',
-        '-xf',
-        resolve(MELON_TMP_DIR, name),
-        '-C',
-        ENGINE_DIR,
-      ].filter(Boolean) as string[]
-    )
-  }
+  log.info(`Unpacking ${resolve(MELON_TMP_DIR, name)} to ${ENGINE_DIR}`)
+  await execa(
+    tarExec,
+    [
+      '--strip-components=1',
+      '-xf',
+      resolve(MELON_TMP_DIR, name),
+      '-C',
+      ENGINE_DIR,
+    ].filter(Boolean) as string[],
+    {
+      shell: BASH_PATH
+    }
+  )
+  log.info(`Unpacked Firefox source to ${ENGINE_DIR}`)
 }
 
 async function downloadFirefoxSource(version: string) {

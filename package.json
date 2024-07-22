@@ -1,6 +1,6 @@
 {
   "name": "@zen-browser/surfer",
-  "version": "1.0.24",
+  "version": "1.0.34",
   "description": "Simplifying building firefox forks!",
   "main": "index.js",
   "bin": {
@@ -38,6 +38,7 @@
     "cli-progress": "^3.9.1",
     "commander": "^6.2.1",
     "execa": "^5.1.1",
+    "fast-extract": "^1.1.0",
     "fs-extra": "^10.0.0",
     "ini": "^3.0.0",
     "is-apple-silicon": "trickypr/is-apple-silicon",
