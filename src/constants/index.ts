@@ -78,7 +78,7 @@ export const FTL_STRING_LINE_REGEX =
 export let BASH_PATH: string | undefined
 
 // All windows specific code should be located inside of this if statement
-if ((process as any).platform == 'win32') {
+if (process.platform == 'win32') {
   const gitPath = execa.sync('where.exe git.exe').stdout.toString()
 
   if (gitPath.includes('git.exe')) {
@@ -96,7 +96,9 @@ if ((process as any).platform == 'win32') {
         log.error('Could not find bash, aborting')
       }
     }
-
+    // Replace .exe with .EXE
+    BASH_PATH = BASH_PATH.replace(/\.exe$/, '.EXE')
+    
     log.debug(`Found bash at ${BASH_PATH}`)
   } else {
     log.error(
