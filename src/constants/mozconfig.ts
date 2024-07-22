@@ -61,6 +61,9 @@ export MOZ_APPUPDATE_HOST=${
 
 function getPlatformOptimiseFlags(): string {
   let optimiseFlags = `# Unknown platform ${(process as any).surferPlatform}`
+  if (process.env.ZEN_GA_GENERATE_PROFILE === '1') {
+    return `ac_add_options --enable-optimize="-O2"`
+  }
 
   switch ((process as any).surferPlatform) {
     case 'linux': {
