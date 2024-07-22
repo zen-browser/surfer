@@ -65,16 +65,29 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     tarExec = 'gtar'
   }
 
-  await execa(
-    tarExec,
-    [
-      '--strip-components=1',
-      '-xf',
-      resolve(MELON_TMP_DIR, name),
-      '-C',
-      ENGINE_DIR,
-    ].filter(Boolean) as string[]
-  )
+  if (process.platform === 'win32') {
+    tarExec = "7z";
+    await execa(
+      tarExec,
+      [
+        'x',
+        resolve(MELON_TMP_DIR, name),
+        `-o${windowsPathToUnix(ENGINE_DIR)}`,
+        '-y',
+      ].filter(Boolean) as string[]
+    )
+  } else {
+    await execa(
+      tarExec,
+      [
+        '--strip-components=1',
+        '-xf',
+        resolve(MELON_TMP_DIR, name),
+        '-C',
+        ENGINE_DIR,
+      ].filter(Boolean) as string[]
+    )
+  }
 }
 
 async function downloadFirefoxSource(version: string) {
