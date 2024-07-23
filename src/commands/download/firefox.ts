@@ -65,6 +65,12 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   }
 
   log.info(`Unpacking ${resolve(MELON_TMP_DIR, name)} to ${ENGINE_DIR}`)
+  if (process.platform === 'win32') {
+    await execa('7z', ['e', resolve(MELON_TMP_DIR, name)]);
+    await execa('7z', ['x', resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar')), '-o' + ENGINE_DIR]);
+    return
+  }
+
   await execa(
     tarExec,
     [
