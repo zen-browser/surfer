@@ -75,7 +75,7 @@ function getPlatformOptimiseFlags(): string {
       break
     }
     case 'win32': {
-      optimiseFlags = `ac_add_options --enable-optimize="-march=x86-64-v3 -msse3 -mtune=haswell -O2 -w"`
+      optimiseFlags = `ac_add_options --enable-optimize="-Qvec -w -ftree-vectorize -msse3 -mssse3 -msse4.1 -mtune=haswell"`
       break
     }
   }
