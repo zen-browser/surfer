@@ -43,25 +43,21 @@ export const init = async (directory: Command | string): Promise<void> => {
   await configDispatch('git', {
     args: ['init'],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['init'],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '--orphan', version],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['add', '-f', '.'],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 
   log.info('Committing...')
@@ -69,12 +65,10 @@ export const init = async (directory: Command | string): Promise<void> => {
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 
   await configDispatch('git', {
     args: ['checkout', '-b', config.name.toLowerCase().replace(/\s/g, '_')],
     cwd: absoluteInitDirectory,
-    shell: 'unix',
   })
 }
