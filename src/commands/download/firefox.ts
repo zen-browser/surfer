@@ -66,7 +66,9 @@ async function unpackFirefoxSource(name: string): Promise<void> {
 
   log.info(`Unpacking ${resolve(MELON_TMP_DIR, name)} to ${ENGINE_DIR}`)
   if (process.platform === 'win32') {
-    await execa('7z', ['e', resolve(MELON_TMP_DIR, name)]);
+    log.info('Unpacking Firefox source on Windows (7z)')
+    await execa('7z', ['x', resolve(MELON_TMP_DIR, name)]);
+    log.info('Unpacking Firefox source again without the .xz extension')
     await execa('7z', ['x', resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar')), '-o' + ENGINE_DIR]);
     return
   }
