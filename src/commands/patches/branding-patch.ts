@@ -42,6 +42,7 @@ const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
 
 const REQUIRED_FILES = ['logo.png']
+const BRANDING_NSIS = 'branding.nsi';
 
 const CSS_REPLACE_REGEX = new RegExp(
   '#130829|hsla\\(235, 43%, 10%, .5\\)',
@@ -199,9 +200,9 @@ async function copyMozFiles(
     (file) => !existsSync(join(outputPath, file.replace(BRANDING_FF, '')))
   )
 
-  const css = files.filter((file) => extname(file).includes('css'))
+  const css = files.filter((file) => extname(file).includes('css'));
 
-  const everythingElse = files.filter((file) => !css.includes(file))
+  const everythingElse = files.filter((file) => !css.includes(file) && !file.includes(BRANDING_NSIS));
 
   for (const [contents, path] of css
     .map((filePath) => [
@@ -216,6 +217,12 @@ async function copyMozFiles(
     mkdirSync(dirname(path), { recursive: true })
     writeFileSync(path, contents)
   }
+
+  const brandingNsis = files.filter((file) => file.includes(BRANDING_NSIS));
+  console.assert(brandingNsis.length == 1, 'There should only be one branding.nsi file');
+  const outputBrandingNsis = join(outputPath, brandingNsis[0].replace(BRANDING_FF, ''));
+  log.debug('Configuring branding.nsi into ' + outputBrandingNsis);
+  configureBrandingNsis(outputBrandingNsis, brandingConfig);
 
   // Copy everything else from the default firefox branding directory
   for (const file of everythingElse) {
@@ -253,4 +260,92 @@ export async function apply(name: string): Promise<void> {
   await setupImages(configPath, outputPath)
   await setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
+}
+
+function configureBrandingNsis(brandingNsis: string, brandingConfig: {
+  backgroundColor: string
+  brandShorterName: string
+  brandShortName: string
+  brandFullName: string
+  brandingGenericName: string
+  brandingVendor: string
+}) {
+  writeFileSync(brandingNsis, `
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# NSIS branding defines for official release builds.
+# The nightly build branding.nsi is located in browser/installer/windows/nsis/
+# The unofficial build branding.nsi is located in browser/branding/unofficial/
+
+# BrandFullNameInternal is used for some registry and file system values
+# instead of BrandFullName and typically should not be modified.
+!define BrandFullNameInternal "${brandingConfig.brandFullName}"
+!define BrandFullName         "${brandingConfig.brandFullName}"
+!define CompanyName           "${brandingConfig.brandingVendor}"
+!define URLInfoAbout          "https://get-zen.vercel.app"
+!define URLUpdateInfo         "https://get-zen.vercel.app/release-notes/\${AppVersion}"
+!define HelpLink              "https://github.com/zen-browser/desktop/issues"
+
+; The OFFICIAL define is a workaround to support different urls for Release and
+; Beta since they share the same branding when building with other branches that
+; set the update channel to beta.
+!define OFFICIAL
+!define URLStubDownloadX86 "https://download.mozilla.org/?os=win&lang=\${AB_CD}&product=firefox-latest"
+!define URLStubDownloadAMD64 "https://download.mozilla.org/?os=win64&lang=\${AB_CD}&product=firefox-latest"
+!define URLStubDownloadAArch64 "https://download.mozilla.org/?os=win64-aarch64&lang=\${AB_CD}&product=firefox-latest"
+!define URLManualDownload "https://get-zen.vercel.app/download"
+!define URLSystemRequirements "https://www.mozilla.org/firefox/system-requirements/"
+!define Channel "release"
+
+# The installer's certificate name and issuer expected by the stub installer
+!define CertNameDownload   "${brandingConfig.brandFullName}"
+!define CertIssuerDownload "DigiCert SHA2 Assured ID Code Signing CA"
+
+# Dialog units are used so the UI displays correctly with the system's DPI
+# settings. These are tweaked to look good with the en-US strings; ideally
+# we would customize them for each locale but we don't really have a way to
+# implement that and it would be a ton of work for the localizers.
+!define PROFILE_CLEANUP_LABEL_TOP "50u"
+!define PROFILE_CLEANUP_LABEL_LEFT "22u"
+!define PROFILE_CLEANUP_LABEL_WIDTH "175u"
+!define PROFILE_CLEANUP_LABEL_HEIGHT "100u"
+!define PROFILE_CLEANUP_LABEL_ALIGN "left"
+!define PROFILE_CLEANUP_CHECKBOX_LEFT "22u"
+!define PROFILE_CLEANUP_CHECKBOX_WIDTH "175u"
+!define PROFILE_CLEANUP_BUTTON_LEFT "22u"
+!define INSTALL_HEADER_TOP "70u"
+!define INSTALL_HEADER_LEFT "22u"
+!define INSTALL_HEADER_WIDTH "180u"
+!define INSTALL_HEADER_HEIGHT "100u"
+!define INSTALL_BODY_LEFT "22u"
+!define INSTALL_BODY_WIDTH "180u"
+!define INSTALL_INSTALLING_TOP "115u"
+!define INSTALL_INSTALLING_LEFT "270u"
+!define INSTALL_INSTALLING_WIDTH "150u"
+!define INSTALL_PROGRESS_BAR_TOP "100u"
+!define INSTALL_PROGRESS_BAR_LEFT "270u"
+!define INSTALL_PROGRESS_BAR_WIDTH "150u"
+!define INSTALL_PROGRESS_BAR_HEIGHT "12u"
+
+!define PROFILE_CLEANUP_CHECKBOX_TOP_MARGIN "12u"
+!define PROFILE_CLEANUP_BUTTON_TOP_MARGIN "12u"
+!define PROFILE_CLEANUP_BUTTON_X_PADDING "80u"
+!define PROFILE_CLEANUP_BUTTON_Y_PADDING "8u"
+!define INSTALL_BODY_TOP_MARGIN "20u"
+
+# Font settings that can be customized for each channel
+!define INSTALL_HEADER_FONT_SIZE 20
+!define INSTALL_HEADER_FONT_WEIGHT 600
+!define INSTALL_INSTALLING_FONT_SIZE 15
+!define INSTALL_INSTALLING_FONT_WEIGHT 600
+
+# UI Colors that can be customized for each channel
+!define COMMON_TEXT_COLOR 0x000000
+!define COMMON_BACKGROUND_COLOR 0xFFFFFF
+!define INSTALL_INSTALLING_TEXT_COLOR 0xFFFFFF
+# This color is written as 0x00BBGGRR because it's actually a COLORREF value.
+!define PROGRESS_BAR_BACKGROUND_COLOR 0xFFAA00
+`);
 }

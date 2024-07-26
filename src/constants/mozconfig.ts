@@ -62,12 +62,12 @@ export MOZ_APPUPDATE_HOST=${
 function getPlatformOptimiseFlags(): string {
   let optimiseFlags = `# Unknown platform ${(process as any).surferPlatform}`
   if (process.env.ZEN_GA_GENERATE_PROFILE === '1') {
-    return `ac_add_options --enable-optimize="-O2"`
+    return `ac_add_options --enable-optimize="-O2 -w"`
   }
 
   switch ((process as any).surferPlatform) {
     case 'linux': {
-      optimiseFlags = `ac_add_options --enable-optimize="-march=x86-64-v3 -msse3 -mtune=haswell -O3 -w"`
+      optimiseFlags = `ac_add_options --enable-optimize="-march=x86-64-v3 -msse3 -mtune=haswell -O3 -w -mavx -maes"`
       break
     }
     case 'darwin': {
@@ -75,7 +75,7 @@ function getPlatformOptimiseFlags(): string {
       break
     }
     case 'win32': {
-      optimiseFlags = `ac_add_options --enable-optimize="-Qvec -w -ftree-vectorize -msse3 -mssse3 -msse4.1 -mtune=haswell"`
+      optimiseFlags = `ac_add_options --enable-optimize="-march=x86-64-v3 -Qvec -w -ftree-vectorize -msse3 -mssse3 -msse4.1 -mtune=haswell -mavx -maes"`
       break
     }
   }
