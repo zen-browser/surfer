@@ -16,7 +16,10 @@ import { every } from 'modern-async'
 import { dirname, extname, join } from 'node:path'
 import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
-import asyncIcns from 'async-icns'
+import asyncIcns from 'async-icns';
+
+// @ts-ignore
+import text2Svg from 'text-svg'
 
 import { config } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
@@ -82,7 +85,14 @@ function constructConfig(name: string) {
 // =============================================================================
 // Main code
 
-async function setupImages(configPath: string, outputPath: string) {
+async function setupImages(configPath: string, outputPath: string, brandingConfig: {
+  backgroundColor: string
+  brandShorterName: string
+  brandShortName: string
+  brandFullName: string
+  brandingGenericName: string
+  brandingVendor: string
+}) {
   log.debug('Generating icons')
 
   // Firefox doesn't use 512 by 512, but we need it to generate ico files later
@@ -132,6 +142,10 @@ async function setupImages(configPath: string, outputPath: string) {
   await sharp(join(configPath, 'logo.png'))
     .resize(1024, 1024)
     .toFile(join(outputPath, 'content', 'about-logo@2x.png'))
+  
+  await writeFile(join(outputPath, 'content', 'firefox-wordmark.svg'), text2Svg(brandingConfig.brandShorterName, {
+    font: '80px Futura',
+  }))
 
   // Register logo in cache
   await addHash(join(configPath, 'logo.png'))
@@ -257,7 +271,7 @@ export async function apply(name: string): Promise<void> {
   // Remove the output path if it exists and recreate it
   ensureEmpty(outputPath)
 
-  await setupImages(configPath, outputPath)
+  await setupImages(configPath, outputPath, brandingConfig);
   await setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
 }
