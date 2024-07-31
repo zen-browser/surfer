@@ -67,7 +67,7 @@ function getPlatformOptimiseFlags(): string {
 
   switch ((process as any).surferPlatform) {
     case 'linux': {
-      optimiseFlags = `ac_add_options --enable-optimize="-march=x86-64-v3 -msse3 -mtune=haswell -O3 -w -mavx -maes"`
+      optimiseFlags = `ac_add_options --enable-optimize="-march=nehalem -msse3 -mtune=znver3 -O3 -w -mavx -maes"`
       break
     }
     case 'darwin': {
