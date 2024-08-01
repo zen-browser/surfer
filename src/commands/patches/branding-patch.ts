@@ -41,7 +41,7 @@ export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
 const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
 
-const REQUIRED_FILES = ['logo.png']
+const REQUIRED_FILES = ['logo.png', 'logo-mac.png'];
 const BRANDING_NSIS = 'branding.nsi';
 
 const CSS_REPLACE_REGEX = new RegExp(
@@ -117,7 +117,7 @@ async function setupImages(configPath: string, outputPath: string) {
     if (existsSync(temporary)) await rm(temporary, { recursive: true })
 
     asyncIcns.convert({
-      input: join(configPath, 'logo.png'),
+      input: join(configPath, 'logo-mac.png'),
       output: join(outputPath, 'firefox.icns'),
       sizes: [16, 32, 64, 128, 256, 512],
       tmpDirectory: temporary,
