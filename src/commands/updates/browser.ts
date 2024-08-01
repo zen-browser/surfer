@@ -32,10 +32,7 @@ const ausPlatformsMap = {
     'Darwin_x86_64-gcc3',
   ],
   macosArm: ['Darwin_aarch64-gcc3'],
-  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
-  
-  linux32: ["Linux_x86-gcc3"],
-  win32: ["WINNT_x86-msvc", "WINNT_x86-msvc-x86", "WINNT_x86-msvc-x64"]
+  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64']
 }
 
 export async function getPlatformConfig() {
@@ -55,13 +52,13 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
 
   switch ((process as any).surferPlatform) {
     case 'win32': {
-      return compatMode ? releaseInfo.archives["windows-x32"] : releaseInfo.archives["windows-x64"];
+      return compatMode ? releaseInfo.archives["windows-compat"] : releaseInfo.archives["windows"];
     }
     case 'darwin': {
       return compatMode ? releaseInfo.archives["macos-x64"] : releaseInfo.archives["macos-aarch64"];
     }
     case 'linux': {
-      return compatMode ? releaseInfo.archives["linux-x32"] : releaseInfo.archives["linux-x64"];
+      return compatMode ? releaseInfo.archives["linux-compat"] : releaseInfo.archives["linux"];
     }
   }
 }
@@ -99,12 +96,13 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
+  const suffix = compatMode ? '-compat' : ''
   const xmlPath = join(
     DIST_DIR,
     'update',
     'browser',
     target,
-    channel,
+    channel + suffix,
     'update.xml'
   )
   const document = create(updateObject)
@@ -115,11 +113,11 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return compatMode ? ausPlatformsMap.win32 : ausPlatformsMap.win64
+    return ausPlatformsMap.win64
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return compatMode ? ausPlatformsMap.linux32 : ausPlatformsMap.linux64
+    return ausPlatformsMap.linux64
   }
 
   // Everything else will have to be darwin of some kind. So, for future possible

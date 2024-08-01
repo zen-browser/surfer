@@ -62,13 +62,13 @@ export interface ReleaseInfo {
   }
 
   archives?: {
-    "windows-x64"?: string,
+    "windows"?: string,
     "macos-aarch64"?: string,
     "macos-x64"?: string,
-    "linux-x64"?: string,
+    "linux"?: string,
 
-    "windows-x32"?: string,
-    "linux-x32"?: string,
+    "windows-compat"?: string,
+    "linux-compat"?: string,
   }
 }
 

@@ -110,7 +110,7 @@ const applyConfig = async (os: string) => {
   writeFileSync(join(ENGINE_DIR, 'browser/config/version_display.txt'), version)
 }
 
-const genericBuild = async (os: string, fast = false) => {
+const genericBuild = async (os: string, fast = false): Promise<boolean> => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
@@ -129,7 +129,7 @@ const genericBuild = async (os: string, fast = false) => {
     `Mach contents: \n ${readFileSync(join(ENGINE_DIR, 'mach'))}\n\n===END===`
   )
 
-  await configDispatch('./mach', {
+  return await configDispatch('./mach', {
     args: buildOptions,
     cwd: ENGINE_DIR,
     killOnError: true,
@@ -173,6 +173,7 @@ export const build = async (options: Options): Promise<void> => {
 
     log.info('Starting build...')
 
-    await genericBuild(prettyHost, options.ui).then(() => success(d))
+    let exit = await genericBuild(prettyHost, options.ui);
+    process.exit(exit ? 0 : 1);
   }
 }
