@@ -61,10 +61,14 @@ export interface ReleaseInfo {
     repo: string
   }
 
-  x86?: {
-    windowsMar?: string
-    macosMar?: string
-    linuxMar?: string
+  archives?: {
+    "windows-x64"?: string,
+    "macos-aarch64"?: string,
+    "macos-x64"?: string,
+    "linux-x64"?: string,
+
+    "windows-x32"?: string,
+    "linux-x32"?: string,
   }
 }
 

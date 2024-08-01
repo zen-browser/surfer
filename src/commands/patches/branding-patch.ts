@@ -18,7 +18,7 @@ import sharp from 'sharp'
 import pngToIco from 'png-to-ico'
 import asyncIcns from 'async-icns'
 
-import { config } from '../..'
+import { compatMode, config } from '../..'
 import { CONFIGS_DIR, ENGINE_DIR, MELON_TMP_DIR } from '../../constants'
 import { log } from '../../log'
 import {
@@ -260,6 +260,8 @@ export async function apply(name: string): Promise<void> {
   await setupImages(configPath, outputPath)
   await setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
+
+  setUpdateURLs();
 }
 
 function configureBrandingNsis(brandingNsis: string, brandingConfig: {
@@ -348,4 +350,12 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 # This color is written as 0x00BBGGRR because it's actually a COLORREF value.
 !define PROGRESS_BAR_BACKGROUND_COLOR 0xFFAA00
 `);
+}
+
+function setUpdateURLs() {
+  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%/update.xml`;
+  const appIni = join(ENGINE_DIR, 'build', 'application.ini.in');
+  const appIniContents = readFileSync(appIni).toString();
+  const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL);
+  writeFileSync(appIni, updatedAppIni);
 }

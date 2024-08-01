@@ -48,6 +48,8 @@ export const bin_name = BIN_NAME
 
 const programVersions = []
 
+export const compatMode = process.env.SURFER_COMPAT == '1';
+
 for (const brand in config.brands) {
   const brandConfig = config.brands[brand]
   programVersions.push({

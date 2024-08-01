@@ -1,10 +1,9 @@
 import { existsSync } from 'node:fs'
 import { readFile, writeFile } from 'node:fs/promises'
 import { parse } from 'ini'
-import { isAppleSilicon } from 'is-apple-silicon'
 import { dirname, join } from 'node:path'
 import { create } from 'xmlbuilder2'
-import { bin_name, config } from '../..'
+import { bin_name, compatMode, config } from '../..'
 import { DIST_DIR, OBJ_DIR } from '../../constants'
 import { log } from '../../log'
 import {
@@ -34,6 +33,9 @@ const ausPlatformsMap = {
   ],
   macosArm: ['Darwin_aarch64-gcc3'],
   win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
+  
+  linux32: ["Linux_x86-gcc3"],
+  win32: ["WINNT_x86-msvc", "WINNT_x86-msvc-x86", "WINNT_x86-msvc-x64"]
 }
 
 export async function getPlatformConfig() {
@@ -46,21 +48,20 @@ export async function getPlatformConfig() {
 }
 
 function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
-  if (isAppleSilicon()) {
-    log.askForReport()
-    log.warning('Apple silicon is not yet supported by the distribution script')
+  if (!releaseInfo.archives) {
+    log.error('No archives found in the release information')
     return
   }
 
   switch ((process as any).surferPlatform) {
     case 'win32': {
-      return releaseInfo.x86?.windowsMar
+      return compatMode ? releaseInfo.archives["windows-x32"] : releaseInfo.archives["windows-x64"];
     }
     case 'darwin': {
-      return releaseInfo.x86?.macosMar
+      return compatMode ? releaseInfo.archives["macos-x64"] : releaseInfo.archives["macos-aarch64"];
     }
     case 'linux': {
-      return releaseInfo.x86?.linuxMar
+      return compatMode ? releaseInfo.archives["linux-x32"] : releaseInfo.archives["linux-x64"];
     }
   }
 }
@@ -114,17 +115,17 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return ausPlatformsMap.win64
+    return compatMode ? ausPlatformsMap.win32 : ausPlatformsMap.win64
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return ausPlatformsMap.linux64
+    return compatMode ? ausPlatformsMap.linux32 : ausPlatformsMap.linux64
   }
 
   // Everything else will have to be darwin of some kind. So, for future possible
   // Apple silicon support, we should chose between the two wisely
   // TODO: This is a hack, fix it
-  if (isAppleSilicon()) {
+  if (!compatMode) {
     return ausPlatformsMap.macosArm
   }
 
