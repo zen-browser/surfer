@@ -353,7 +353,8 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 }
 
 function setUpdateURLs() {
-  const sufix = compatMode ? '-compat' : '';
+  const sufix = (compatMode && (process as any).surferPlatform !== 'macos')
+    ? '-generic' : '';
   const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${sufix}/update.xml`;
   const appIni = join(ENGINE_DIR, 'build', 'application.ini.in');
   const appIniContents = readFileSync(appIni).toString();
