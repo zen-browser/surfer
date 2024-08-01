@@ -62,9 +62,8 @@ const applyConfig = async (os: string) => {
     templateOptions
   )
 
-  const osMozconfig = os === 'windows' ? 'linux' : os; // Windows uses the linux mozconfig
   const osConfig = stringTemplate(
-    readFileSync(resolve(CONFIGS_DIR, osMozconfig, 'mozconfig')).toString(),
+    readFileSync(resolve(CONFIGS_DIR, os, 'mozconfig')).toString(),
     templateOptions
   )
 
