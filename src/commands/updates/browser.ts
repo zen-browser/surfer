@@ -96,7 +96,7 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  const suffix = compatMode ? '-compat' : ''
+  const suffix = compatMode ? '-generic' : ''
   const xmlPath = join(
     DIST_DIR,
     'update',
