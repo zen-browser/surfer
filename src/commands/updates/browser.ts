@@ -96,7 +96,7 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  const suffix = compatMode ? '-generic' : ''
+  const suffix = (compatMode && (process as any).surferPlatform !== 'macos') ? '-generic' : ''
   const xmlPath = join(
     DIST_DIR,
     'update',
