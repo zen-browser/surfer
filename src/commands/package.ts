@@ -116,7 +116,7 @@ export const surferPackage = async () => {
     }
   }
 
-  const marPath = await createMarFile(version, channel)
+  const marPath = await createMarFile(version, channel, brandingDetails.release.github);
   dynamicConfig.set('marPath', marPath)
 
   await generateBrowserUpdateFiles()
@@ -137,7 +137,7 @@ function getCurrentBrandName(): string {
   return config.brands[brand].brandFullName
 }
 
-async function createMarFile(version: string, channel: string) {
+async function createMarFile(version: string, channel: string, github?: { repo: string }) {
   log.info(`Creating mar file...`)
   let marBinary: string = windowsPathToUnix(
     join(OBJ_DIR, 'dist/host/bin', 'mar')
