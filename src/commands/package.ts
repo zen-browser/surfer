@@ -6,7 +6,7 @@ import { copyFile, mkdir, readdir, unlink } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
 import { bin_name, config } from '..'
-import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
+import { DIST_DIR, ENGINE_DIR, OBJ_DIR, MAR_TMP_FILE } from '../constants'
 import { log } from '../log'
 import {
   configDispatch,
@@ -14,7 +14,9 @@ import {
   dynamicConfig,
   windowsPathToUnix,
 } from '../utils'
-import { generateBrowserUpdateFiles } from './updates/browser'
+import { generateBrowserUpdateFiles, getReleaseMarURL } from './updates/browser'
+import { downloadFileToLocation } from '../utils/download'
+import { moveSync } from 'fs-extra'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
@@ -138,36 +140,83 @@ function getCurrentBrandName(): string {
 }
 
 async function createMarFile(version: string, channel: string, github?: { repo: string }) {
-  log.info(`Creating mar file...`)
-  let marBinary: string = windowsPathToUnix(
-    join(OBJ_DIR, 'dist/host/bin', 'mar')
-  )
+  return new Promise(async (resolve, reject) => {
+    log.info(`Creating mar file...`)
+    let marBinary: string = windowsPathToUnix(
+      join(OBJ_DIR, 'dist/host/bin', 'mar')
+    )
 
-  if (process.platform == 'win32') {
-    marBinary += '.exe'
-  }
+    if (process.platform == 'win32') {
+      marBinary += '.exe'
+    }
 
-  // On macos this should be
-  // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
-  // the contents of the folder <obj dir>/dist/${binaryName}
-  const binary =
-    (process as any).surferPlatform == 'darwin'
-      ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
-      : join(OBJ_DIR, 'dist', config.binaryName)
+    // On macos this should be
+    // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
+    // the contents of the folder <obj dir>/dist/${binaryName}
+    const binary =
+      (process as any).surferPlatform == 'darwin'
+        ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
+        : join(OBJ_DIR, 'dist', config.binaryName)
 
-  const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
-  await configDispatch('./tools/update-packaging/make_full_update.sh', {
-    args: [
-      // The mar output location
-      windowsPathToUnix(join(DIST_DIR)),
-      binary,
-    ],
-    cwd: ENGINE_DIR,
-    env: {
-      MOZ_PRODUCT_VERSION: version,
-      MAR_CHANNEL_ID: channel,
-      MAR: marBinary,
-    },
-  })
-  return marPath
+    const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
+    await configDispatch('./tools/update-packaging/make_full_update.sh', {
+      args: [
+        // The mar output location
+        windowsPathToUnix(join(DIST_DIR)),
+        binary,
+      ],
+      cwd: ENGINE_DIR,
+      env: {
+        MOZ_PRODUCT_VERSION: version,
+        MAR_CHANNEL_ID: channel,
+        MAR: marBinary,
+      },
+    });
+
+    // Download the latest MAR from the github release and run make_incremental_update.sh
+    const brandingKey = dynamicConfig.get('brand') as string
+    const brandingDetails = config.brands[brandingKey]
+    const releaseInfo = brandingDetails.release
+
+    console.log(releaseInfo)
+    const releaseUrl = getReleaseMarURL(releaseInfo);
+    // Try downloading the file
+    const oldMarFile = "output-old.mar";
+    await downloadFileToLocation(releaseUrl, oldMarFile).catch((error) => {
+      log.warning(`Failed to download the MAR file from ${releaseUrl}`)
+      resolve(marPath)
+    }).then(async () => {
+      log.info(`Downloaded the MAR file from ${releaseUrl}`)
+      // Extract both the old and new mar files into MAR_TMP_FILE/A and MAR_TMP_FILE/B
+      const oldMarPath = join(MAR_TMP_FILE, 'A')
+      const newMarPath = join(MAR_TMP_FILE, 'B')
+
+      await configDispatch(marBinary, {
+        args: ['-x', oldMarFile],
+        cwd: MAR_TMP_FILE,
+      });
+
+      // Run the make_incremental_update.sh script
+      await configDispatch('./tools/update-packaging/make_incremental_update.sh', {
+        args: [
+          // The mar output location
+          windowsPathToUnix(join(DIST_DIR)),
+          oldMarPath,
+          marPath,
+          newMarPath,
+        ],
+        cwd: ENGINE_DIR,
+        env: {
+          MOZ_PRODUCT_VERSION: version,
+          MAR_CHANNEL_ID: channel,
+          MAR: marBinary,
+        },
+      }).then(() => {
+        resolve(marPath)
+      }).catch((error) => {
+        log.error(`Failed to create the incremental update: ${error}`)
+        resolve(marPath)
+      });
+    });
+  });
 }

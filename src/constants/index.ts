@@ -31,6 +31,7 @@ export const CONFIGS_DIR = resolve(process.cwd(), 'configs')
 export const MELON_DIR = resolve(process.cwd(), '.surfer')
 export const MELON_TMP_DIR = resolve(MELON_DIR, 'engine')
 export const DIST_DIR = resolve(process.cwd(), 'dist')
+export const MAR_TMP_FILE = resolve(process.cwd(), 'dist-old')
 
 mkdirSync(MELON_TMP_DIR, { recursive: true })
 

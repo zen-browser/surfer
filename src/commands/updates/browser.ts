@@ -63,7 +63,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   }
 }
 
-function getReleaseMarURL(releaseInfo: ReleaseInfo) {
+export function getReleaseMarURL(releaseInfo: ReleaseInfo) {
   const releaseMarName = getReleaseMarName(releaseInfo)
   let completeMarURL = `https://${config.updateHostname || 'localhost:8000'}/${
     releaseMarName || 'output.mar'
