@@ -41,7 +41,7 @@ export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
 const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
 
-const REQUIRED_FILES = ['logo.png', 'logo-mac.png'];
+const REQUIRED_FILES = ['logo.png', 'logo-mac.png', 'firefox.ico', 'firefox64.ico']
 const BRANDING_NSIS = 'branding.nsi';
 
 const CSS_REPLACE_REGEX = new RegExp(
@@ -87,27 +87,24 @@ async function setupImages(configPath: string, outputPath: string) {
 
   // Firefox doesn't use 512 by 512, but we need it to generate ico files later
   await every([16, 22, 24, 32, 48, 64, 128, 256, 512], async (size) => {
-    await sharp(join(configPath, 'logo.png'))
-      .resize(size, size)
-      .toFile(join(outputPath, `default${size}.png`))
+    const logoPath = join(configPath, `logo${size}.png`);
+    if (!filesExist([logoPath])) throw new Error(`Missing logo${size}.png`);
 
-    await copyFile(
-      join(outputPath, `default${size}.png`),
-      join(configPath, `logo${size}.png`)
-    )
-
+    const outputPathLogo = join(outputPath, `default${size}.png`);
+    await copyFile(logoPath, outputPathLogo);
     return true
   })
 
   log.debug('Generating Windows Icons')
-  writeFileSync(
-    join(outputPath, 'firefox.ico'),
-    await pngToIco([join(configPath, 'logo512.png')])
-  )
-  writeFileSync(
-    join(outputPath, 'firefox64.ico'),
-    await pngToIco([join(configPath, 'logo64.png')])
-  )
+  await copyFile(
+    join(configPath, "firefox.ico"),
+    join(outputPath, "firefox.ico")
+  );
+
+  await copyFile(
+    join(configPath, "firefox64.ico"),
+    join(outputPath, "firefox64.ico")
+  );
 
   // TODO: Custom MacOS icon support
   if ((process as any).surferPlatform == 'darwin') {
@@ -221,8 +218,10 @@ async function copyMozFiles(
   const brandingNsis = files.filter((file) => file.includes(BRANDING_NSIS));
   console.assert(brandingNsis.length == 1, 'There should only be one branding.nsi file');
   const outputBrandingNsis = join(outputPath, brandingNsis[0].replace(BRANDING_FF, ''));
+  const configureProfileBrandingPath = join(outputPath, 'pref', 'firefox-branding.js');
   log.debug('Configuring branding.nsi into ' + outputBrandingNsis);
   configureBrandingNsis(outputBrandingNsis, brandingConfig);
+  configureProfileBranding(configureProfileBrandingPath, brandingConfig);
 
   // Copy everything else from the default firefox branding directory
   for (const file of everythingElse) {
@@ -286,8 +285,8 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 !define BrandFullNameInternal "${brandingConfig.brandFullName}"
 !define BrandFullName         "${brandingConfig.brandFullName}"
 !define CompanyName           "${brandingConfig.brandingVendor}"
-!define URLInfoAbout          "https://get-zen.vercel.app"
-!define URLUpdateInfo         "https://get-zen.vercel.app/release-notes/\${AppVersion}"
+!define URLInfoAbout          "https://zen-browser.app"
+!define URLUpdateInfo         "https://zen-browser.app/release-notes/\${AppVersion}"
 !define HelpLink              "https://github.com/zen-browser/desktop/issues"
 
 ; The OFFICIAL define is a workaround to support different urls for Release and
@@ -297,7 +296,7 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 !define URLStubDownloadX86 "https://download.mozilla.org/?os=win&lang=\${AB_CD}&product=firefox-latest"
 !define URLStubDownloadAMD64 "https://download.mozilla.org/?os=win64&lang=\${AB_CD}&product=firefox-latest"
 !define URLStubDownloadAArch64 "https://download.mozilla.org/?os=win64-aarch64&lang=\${AB_CD}&product=firefox-latest"
-!define URLManualDownload "https://get-zen.vercel.app/download"
+!define URLManualDownload "https://zen-browser.app/download"
 !define URLSystemRequirements "https://www.mozilla.org/firefox/system-requirements/"
 !define Channel "release"
 
@@ -349,6 +348,37 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 !define INSTALL_INSTALLING_TEXT_COLOR 0xFFFFFF
 # This color is written as 0x00BBGGRR because it's actually a COLORREF value.
 !define PROGRESS_BAR_BACKGROUND_COLOR 0xFFAA00
+`);
+}
+
+function configureProfileBranding(brandingPath: string, brandingConfig: {
+  backgroundColor: string
+  brandShorterName: string
+  brandShortName: string
+  brandFullName: string
+  brandingGenericName: string
+  brandingVendor: string
+}) {
+  writeFileSync(brandingPath, `
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+pref("startup.homepage_override_url", "https://zen-browser.app/welcome/");
+pref("startup.homepage_welcome_url", "https://zen-browser.app/welcome/");
+pref("startup.homepage_welcome_url.additional", "https://zen-browser.app/privacy-policy/");
+
+// Give the user x seconds to react before showing the big UI. default=192 hours
+pref("app.update.promptWaitTime", 691200);
+// app.update.url.manual: URL user can browse to manually if for some reason
+// all update installation attempts fail.
+// app.update.url.details: a default value for the "More information about this
+// update" link supplied in the "An update is available" page of the update
+// wizard.
+pref("app.update.url.manual", "https://zen-browser.app/");
+pref("app.update.url.details", "https://zen-browser.app/release-notes/latest/");
+pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/latest/");
+pref("app.releaseNotesURL.aboutDialog", "https://zen-browser.app/");
 `);
 }
 
