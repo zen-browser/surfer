@@ -221,6 +221,9 @@ async function copyMozFiles(
   const configureProfileBrandingPath = join(outputPath, 'pref', 'firefox-branding.js');
   log.debug('Configuring branding.nsi into ' + outputBrandingNsis);
   configureBrandingNsis(outputBrandingNsis, brandingConfig);
+
+  // Create 'pref' directory
+  mkdirSync(dirname(join(outputPath, 'pref')), { recursive: true });
   configureProfileBranding(configureProfileBrandingPath, brandingConfig);
 
   // Copy everything else from the default firefox branding directory
