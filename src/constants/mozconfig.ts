@@ -28,6 +28,7 @@ ac_add_options --disable-optimize`
     case 'release': {
       buildOptions = `# Release build settings
 ac_add_options --disable-debug
+ac_add_options --enable-optimize
 ac_add_options --enable-rust-simd`
       break
     }
