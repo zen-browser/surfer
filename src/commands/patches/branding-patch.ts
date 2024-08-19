@@ -222,15 +222,14 @@ async function copyMozFiles(
   log.debug('Configuring branding.nsi into ' + outputBrandingNsis);
   configureBrandingNsis(outputBrandingNsis, brandingConfig);
 
-  // Create 'pref' directory
-  mkdirSync(dirname(join(outputPath, 'pref')), { recursive: true });
-  configureProfileBranding(configureProfileBrandingPath, brandingConfig);
-
   // Copy everything else from the default firefox branding directory
   for (const file of everythingElse) {
     mkdirpSync(dirname(join(outputPath, file.replace(BRANDING_FF, ''))))
     copyFileSync(file, join(outputPath, file.replace(BRANDING_FF, '')))
   }
+
+  // Create 'pref' directory
+  configureProfileBranding(configureProfileBrandingPath, brandingConfig);
 }
 
 // =============================================================================
