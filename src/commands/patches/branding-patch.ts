@@ -365,11 +365,11 @@ function addOptionalIcons(brandingPath: string, outputPath: string) {
   }
 
   if (existsSync(documentIcon)) {
-    copyFileSync(documentIcon, join(outputPath, 'content', 'windows', 'document.ico'));
+    copyFileSync(documentIcon, join(outputPath, 'document.ico'));
   }
 
   if (existsSync(documentPdfIcon)) {
-    copyFileSync(documentPdfIcon, join(outputPath, 'content', 'windows', 'document_pdf.ico'));
+    copyFileSync(documentPdfIcon, join(outputPath, 'document_pdf.ico'));
   }
 }
  
