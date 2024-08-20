@@ -228,7 +228,6 @@ async function copyMozFiles(
     copyFileSync(file, join(outputPath, file.replace(BRANDING_FF, '')))
   }
 
-  // Create 'pref' directory
   configureProfileBranding(configureProfileBrandingPath, brandingConfig);
 }
 
@@ -261,6 +260,7 @@ export async function apply(name: string): Promise<void> {
   await setupImages(configPath, outputPath)
   await setupLocale(outputPath, brandingConfig)
   await copyMozFiles(outputPath, brandingConfig)
+  await addOptionalIcons(configPath, outputPath)
 
   setUpdateURLs();
 }
@@ -353,6 +353,26 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 `);
 }
 
+function addOptionalIcons(brandingPath: string, outputPath: string) {
+  // move pbmode.ico, content/windows/document.ico and content/windows/document_pdf.ico
+  // into the branding directory
+  const pbmodeIcon = join(brandingPath, 'pbmode.ico');
+  const documentIcon = join(brandingPath, 'content', 'windows', 'document.ico');
+  const documentPdfIcon = join(brandingPath, 'content', 'windows', 'document_pdf.ico');
+
+  if (existsSync(pbmodeIcon)) {
+    copyFileSync(pbmodeIcon, join(outputPath, 'pbmode.ico'));
+  }
+
+  if (existsSync(documentIcon)) {
+    copyFileSync(documentIcon, join(outputPath, 'content', 'windows', 'document.ico'));
+  }
+
+  if (existsSync(documentPdfIcon)) {
+    copyFileSync(documentPdfIcon, join(outputPath, 'content', 'windows', 'document_pdf.ico'));
+  }
+}
+ 
 function configureProfileBranding(brandingPath: string, brandingConfig: {
   backgroundColor: string
   brandShorterName: string
