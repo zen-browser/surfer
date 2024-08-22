@@ -348,6 +348,7 @@ function addOptionalIcons(brandingPath: string, outputPath: string) {
   const iconsContent = readdirSync(join(brandingPath, 'content'));
 
   for (const icon of icons) {
+    if (icon.includes('content')) continue;
     log.info(`Copying ${icon} to ${outputPath}`);
     copyFileSync(join(brandingPath, icon), join(outputPath, icon));
   }
