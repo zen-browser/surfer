@@ -95,17 +95,6 @@ async function setupImages(configPath: string, outputPath: string) {
     return true
   })
 
-  log.debug('Generating Windows Icons')
-  await copyFile(
-    join(configPath, "firefox.ico"),
-    join(outputPath, "firefox.ico")
-  );
-
-  await copyFile(
-    join(configPath, "firefox64.ico"),
-    join(outputPath, "firefox64.ico")
-  );
-
   // TODO: Custom MacOS icon support
   if ((process as any).surferPlatform == 'darwin') {
     log.debug('Generating Mac Icons')
@@ -354,22 +343,18 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 }
 
 function addOptionalIcons(brandingPath: string, outputPath: string) {
-  // move pbmode.ico, content/windows/document.ico and content/windows/document_pdf.ico
-  // into the branding directory
-  const pbmodeIcon = join(brandingPath, 'pbmode.ico');
-  const documentIcon = join(brandingPath, 'content', 'windows', 'document.ico');
-  const documentPdfIcon = join(brandingPath, 'content', 'windows', 'document_pdf.ico');
+  // move all icons in the top directory and inside "content/" into the branding directory
+  const icons = readdirSync(brandingPath);
+  const iconsContent = readdirSync(join(brandingPath, 'content'));
 
-  if (existsSync(pbmodeIcon)) {
-    copyFileSync(pbmodeIcon, join(outputPath, 'pbmode.ico'));
+  for (const icon of icons) {
+    log.info(`Copying ${icon} to ${outputPath}`);
+    copyFileSync(join(brandingPath, icon), join(outputPath, icon));
   }
 
-  if (existsSync(documentIcon)) {
-    copyFileSync(documentIcon, join(outputPath, 'document.ico'));
-  }
-
-  if (existsSync(documentPdfIcon)) {
-    copyFileSync(documentPdfIcon, join(outputPath, 'document_pdf.ico'));
+  for (const icon of iconsContent) {
+    log.info(`Copying ${icon} to ${outputPath}`);
+    copyFileSync(join(brandingPath, 'content', icon), join(outputPath, icon));
   }
 }
  
