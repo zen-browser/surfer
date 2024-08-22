@@ -355,7 +355,7 @@ function addOptionalIcons(brandingPath: string, outputPath: string) {
 
   for (const icon of iconsContent) {
     log.info(`Copying ${icon} to ${outputPath}`);
-    copyFileSync(join(brandingPath, 'content', icon), join(outputPath, icon));
+    copyFileSync(join(brandingPath, 'content', icon), join(outputPath, 'content', icon));
   }
 }
  
