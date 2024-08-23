@@ -21,6 +21,7 @@ const machPath = resolve(ENGINE_DIR, 'mach')
 export const ZEN_LOCALES = [
   "en-US",
   "es-ES",
+  "uk-UA",
 ];
 
 export const surferPackage = async () => {
