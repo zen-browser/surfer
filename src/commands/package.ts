@@ -18,6 +18,11 @@ import { generateBrowserUpdateFiles } from './updates/browser'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
+export const ZEN_LOCALES = [
+  "en-US",
+  "es-ES",
+];
+
 export const surferPackage = async () => {
   const brandingKey = dynamicConfig.get('brand') as string
   const brandingDetails = config.brands[brandingKey]
@@ -46,6 +51,10 @@ export const surferPackage = async () => {
   )
 
   await dispatch(machPath, arguments_, ENGINE_DIR, true)
+
+  log.info("Copying language packs")
+
+  await dispatch(machPath, ['package-multi-locale', '--locales', ...ZEN_LOCALES], ENGINE_DIR, true)
 
   log.info('Copying results up')
 
