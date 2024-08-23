@@ -15,14 +15,17 @@ import {
   windowsPathToUnix,
 } from '../utils'
 import { generateBrowserUpdateFiles } from './updates/browser'
+import { readFile } from 'fs-extra'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
-export const ZEN_LOCALES = [
-  "en-US",
-  "es-ES",
-  "uk-UA",
-];
+async function getLocales() {
+  // l10n/supported-languages is a list of locales divided by newlines
+  // open the file and split it by newlines
+  const localesText = await readFile("l10n/supported-languages", "utf-8");
+  log.info(`Found locales:\n${localesText}`);
+  return localesText.split("\n");
+}
 
 export const surferPackage = async () => {
   const brandingKey = dynamicConfig.get('brand') as string
@@ -55,7 +58,7 @@ export const surferPackage = async () => {
 
   log.info("Copying language packs")
 
-  await dispatch(machPath, ['package-multi-locale', '--locales', ...ZEN_LOCALES], ENGINE_DIR, true)
+  await dispatch(machPath, ['package-multi-locale', '--locales', ...(await getLocales())], ENGINE_DIR, true)
 
   log.info('Copying results up')
 
