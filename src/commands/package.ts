@@ -46,14 +46,17 @@ export const surferPackage = async () => {
     log.error(`Cannot locate the 'mach' binary within ${ENGINE_DIR}`)
   }
 
-  // Run scripts/merge-l10n-packs.sh if it exists
-  const mergeL10nPacksPath = join(ENGINE_DIR, "..", "scripts", "merge-l10n-packs.sh")
-  if (existsSync(mergeL10nPacksPath)) {
-    log.info("Running merge-l10n-packs.sh")
-    await configDispatch(mergeL10nPacksPath, {
-      args: [],
-      cwd: ENGINE_DIR,
-    })
+  // Merge language packs
+  for (const locale of await getLocales()) {
+    const arguments_ = ["build", `merge-${locale}`]
+
+    log.info(
+      `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
+        arguments_.slice(1, 0)
+      )}...`
+    )
+
+    await dispatch(machPath, arguments_, ENGINE_DIR, true)
   }
 
   const arguments_ = ['package']
