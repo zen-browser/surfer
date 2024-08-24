@@ -46,6 +46,16 @@ export const surferPackage = async () => {
     log.error(`Cannot locate the 'mach' binary within ${ENGINE_DIR}`)
   }
 
+  const arguments_ = ['package']
+
+  log.info(
+    `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
+      arguments_.slice(1, 0)
+    )}...`
+  )
+
+  await dispatch(machPath, arguments_, ENGINE_DIR, true)
+
   // Merge language packs
   for (const locale of await getLocales()) {
     const arguments_ = ["build", `merge-${locale}`]
@@ -58,16 +68,6 @@ export const surferPackage = async () => {
 
     await dispatch(machPath, arguments_, ENGINE_DIR, true)
   }
-
-  const arguments_ = ['package']
-
-  log.info(
-    `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
-      arguments_.slice(1, 0)
-    )}...`
-  )
-
-  await dispatch(machPath, arguments_, ENGINE_DIR, true)
 
   log.info("Copying language packs")
 
