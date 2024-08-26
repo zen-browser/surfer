@@ -387,6 +387,10 @@ pref("app.update.url.manual", "https://zen-browser.app/");
 pref("app.update.url.details", "https://zen-browser.app/release-notes/latest/");
 pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/latest/");
 pref("app.releaseNotesURL.aboutDialog", "https://zen-browser.app/");
+
+// Number of usages of the web console.
+// If this is less than 5, then pasting code into the web console is disabled
+pref("devtools.selfxss.count", 0);
 `);
 }
 
