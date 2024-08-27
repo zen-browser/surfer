@@ -4,7 +4,7 @@
 
 Build Firefox-based browsers with ease
 
-**This is still in a prerelease / prototype phase. Changes will be made, things will be broken**
+**This is still in a prerelease / prototype phase. When changes are made, things might break.**
 
 </div>
 
@@ -18,7 +18,7 @@ npm install @zen-browser/surfer
 
 Documentation is available on [docs.gluon.dev](https://docs.gluon.dev) or in the docs folder of this repository.
 
-## Licencing notes
+## Licensing notes
 
 The following is included in good faith. The writer is not a lawyer, and this is not legal advice.
 
