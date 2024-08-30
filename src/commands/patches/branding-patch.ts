@@ -121,14 +121,6 @@ async function setupImages(configPath: string, outputPath: string) {
 
   // Register logo in cache
   await addHash(join(configPath, 'logo.png'))
-
-  log.debug('Generating macos install')
-  const macosInstall = await renderAsync(
-    await readFile(join(configPath, 'MacOSInstaller.svg'))
-  )
-  await writeFile(join(outputPath, 'content', 'background.png'), macosInstall)
-
-  await addHash(join(configPath, 'MacOSInstaller.svg'))
 }
 
 async function setupLocale(
