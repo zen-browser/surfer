@@ -5,7 +5,7 @@ import { existsSync } from 'node:fs'
 import { copyFile, mkdir, readdir, unlink } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
-import { bin_name, config } from '..'
+import { bin_name, compatMode, config } from '..'
 import { DIST_DIR, ENGINE_DIR, OBJ_DIR } from '../constants'
 import { log } from '../log'
 import {
@@ -72,6 +72,20 @@ export const surferPackage = async () => {
   log.info("Copying language packs")
 
   await dispatch(machPath, ['package-multi-locale', '--locales', ...(await getLocales())], ENGINE_DIR, true)
+
+  // If we are on macos, run "mach macos-sign" to sign the app and repack it
+  if ((process as any).surferPlatform == 'darwin') {
+    const currentCWD = process.cwd()
+    log.info('Signing the app')
+    await dispatch(machPath, ['macos-sign', '--verbose', 
+      '-a', `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
+      '-r',
+      '--rcodesign-p12-file', `${currentCWD}/certificate.p12`,
+      '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
+      '-c', 'release',
+      '-e', 'production'], ENGINE_DIR, true);
+    await dispatch(machPath, ['repackage'], ENGINE_DIR, true);
+  }
 
   log.info('Copying results up')
 
