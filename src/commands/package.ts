@@ -77,6 +77,21 @@ export const surferPackage = async () => {
   if ((process as any).surferPlatform == 'darwin') {
     const currentCWD = process.cwd()
     log.info('Signing the app')
+    // In order to be able to sign the app, we need to "unlink" the files that are currently in the dist directory
+    // and then copy the signed app back into the dist directory. Iterate recursively through the dist directory
+    // and unlink all files.
+    const unlinkFiles = async (dir: string) => {
+      const files = await readdir(dir, { withFileTypes: true });
+      for (const file of files) {
+        if (file.isDirectory()) {
+          await unlinkFiles(join(dir, file.name));
+        } else {
+          // Copy the file to the dist directory
+          await copyFile(join(dir, file.name), join(DIST_DIR, file.name));
+        }
+      }
+    }
+    await unlinkFiles(join(OBJ_DIR, 'dist', 'Zen Browser.app'));
     await dispatch(machPath, ['macos-sign', '--verbose', 
       '-a', `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
       '-r',
