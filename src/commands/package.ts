@@ -1,7 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync } from 'node:fs'
+import { existsSync, lstat, rmdirSync } from 'node:fs'
 import { copyFile, mkdir, readdir, unlink } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
@@ -15,7 +15,7 @@ import {
   windowsPathToUnix,
 } from '../utils'
 import { generateBrowserUpdateFiles } from './updates/browser'
-import { readFile } from 'fs-extra'
+import { lstatSync, readFile, remove, removeSync } from 'fs-extra'
 
 const machPath = resolve(ENGINE_DIR, 'mach')
 
@@ -77,21 +77,25 @@ export const surferPackage = async () => {
   if ((process as any).surferPlatform == 'darwin') {
     const currentCWD = process.cwd()
     log.info('Signing the app')
-    // In order to be able to sign the app, we need to "unlink" the files that are currently in the dist directory
-    // and then copy the signed app back into the dist directory. Iterate recursively through the dist directory
-    // and unlink all files.
-    const unlinkFiles = async (dir: string) => {
-      const files = await readdir(dir, { withFileTypes: true });
-      for (const file of files) {
-        if (file.isDirectory()) {
-          await unlinkFiles(join(dir, file.name));
-        } else {
-          // Copy the file to the dist directory
-          await copyFile(join(dir, file.name), join(DIST_DIR, file.name));
-        }
-      }
+
+    const dmgFile = (await readdir(join(OBJ_DIR, 'dist'))).find((file) => file.endsWith('.dmg'))
+    if (!dmgFile) {
+      log.error('Could not find the dmg file')
+      return;
     }
-    await unlinkFiles(join(OBJ_DIR, 'dist', 'Zen Browser.app'));
+
+    log.debug('Copying the dmg file to the current working directory')
+    // extract the dmg file
+    await dispatch('hdiutil', ['attach', join(OBJ_DIR, 'dist', dmgFile)], currentCWD, true)
+    const mountedPath = (await readdir('/Volumes')).find((file) => file.startsWith('Zen Browser'))
+    if (!mountedPath) {
+      log.error('Could not find the mounted path')
+      return;
+    }
+    await rmdirSync(join(currentCWD, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`), { recursive: true })
+    await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`], currentCWD, true)
+    await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
+    
     await dispatch(machPath, ['macos-sign', '--verbose', 
       '-a', `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
       '-r',
@@ -99,7 +103,10 @@ export const surferPackage = async () => {
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
       '-c', 'release',
       '-e', 'production'], ENGINE_DIR, true);
-    await dispatch(machPath, ['repackage'], ENGINE_DIR, true);
+    await remove(join(OBJ_DIR, 'dist', dmgFile))
+    await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg', '--verbose',
+      `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
+      `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/${dmgFile}`], ENGINE_DIR, true);
   }
 
   log.info('Copying results up')
