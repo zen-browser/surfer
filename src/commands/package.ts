@@ -92,7 +92,7 @@ export const surferPackage = async () => {
       log.error('Could not find the mounted path')
       return;
     }
-    await rmdirSync(join(currentCWD, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`), { recursive: true })
+    await rmdirSync(join(ENGINE_DIR, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`), { recursive: true })
     log.info('Copying the app to the current working directory, into the dist folder')
     await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`], ENGINE_DIR, true)
     await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
