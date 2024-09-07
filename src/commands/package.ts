@@ -94,12 +94,13 @@ export const surferPackage = async () => {
       return;
     }
     const zenDestDir = join(OBJ_DIR, 'dist', 'zen');
-    await rmSync(join(ENGINE_DIR, zenDestDir), { recursive: true })
+    await rmSync(zenDestDir, { recursive: true })
     log.info('Copying the app to the current working directory, into the dist folder')
     await mkdir(zenDestDir, { recursive: true })
     await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, zenDestDir], ENGINE_DIR, true)
+    log.info('Detaching the dmg')
     await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
-    
+    log.info('Signing the app')
     await dispatch(machPath, ['macos-sign', '--verbose', 
       '-a', join(zenDestDir, 'Zen Browser.app'),
       '-r',
@@ -107,6 +108,7 @@ export const surferPackage = async () => {
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
       '-c', 'release',
       '-e', 'production'], ENGINE_DIR, true);
+    log.info('Repacking the app')
     await remove(dmgPath)
     await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
       zenDestDir,
