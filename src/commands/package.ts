@@ -1,7 +1,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import { existsSync, lstat, rmdirSync } from 'node:fs'
+import { existsSync, lstat, rmdirSync, rmSync } from 'node:fs'
 import { copyFile, mkdir, readdir, unlink } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
@@ -86,28 +86,31 @@ export const surferPackage = async () => {
 
     log.debug('Copying the dmg file to the current working directory')
     // extract the dmg file
-    await dispatch('hdiutil', ['attach', join(OBJ_DIR, 'dist', dmgFile)], currentCWD, true)
+    const dmgPath = join(OBJ_DIR, 'dist', dmgFile);
+    await dispatch('hdiutil', ['attach', dmgPath], currentCWD, true)
     const mountedPath = (await readdir('/Volumes')).find((file) => file.startsWith('Zen Browser'))
     if (!mountedPath) {
       log.error('Could not find the mounted path')
       return;
     }
-    await rmdirSync(join(ENGINE_DIR, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`), { recursive: true })
+    const zenDestDir = join(OBJ_DIR, 'dist', 'zen');
+    await rmSync(join(ENGINE_DIR, zenDestDir), { recursive: true })
     log.info('Copying the app to the current working directory, into the dist folder')
-    await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist`], ENGINE_DIR, true)
+    await mkdir(zenDestDir, { recursive: true })
+    await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, zenDestDir], ENGINE_DIR, true)
     await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
     
     await dispatch(machPath, ['macos-sign', '--verbose', 
-      '-a', `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
+      '-a', join(zenDestDir, 'Zen Browser.app'),
       '-r',
       '--rcodesign-p12-file', `${currentCWD}/certificate.p12`,
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
       '-c', 'release',
       '-e', 'production'], ENGINE_DIR, true);
-    await remove(join(OBJ_DIR, 'dist', dmgFile))
-    await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg', '--verbose',
-      `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/Zen Browser.app`,
-      `obj-${compatMode ? 'x86_64' : 'aarch64'}-apple-darwin/dist/${dmgFile}`], ENGINE_DIR, true);
+    await remove(dmgPath)
+    await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
+      zenDestDir,
+      dmgPath], ENGINE_DIR, true);
   }
 
   log.info('Copying results up')
