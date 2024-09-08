@@ -94,9 +94,8 @@ export const surferPackage = async () => {
       return;
     }
     const zenDestDir = join(OBJ_DIR, 'dist', 'zen');
-    await rmSync(zenDestDir, { recursive: true })
+    await rmSync(join(zenDestDir, 'Zen Browser.app'), { recursive: true })
     log.info('Copying the app to the current working directory, into the dist folder')
-    await mkdir(zenDestDir, { recursive: true })
     await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, zenDestDir], ENGINE_DIR, true)
     log.info('Detaching the dmg')
     await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
@@ -111,6 +110,7 @@ export const surferPackage = async () => {
     log.info('Repacking the app')
     await remove(dmgPath)
     await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
+      '--volume-name', 'Zen Browser',
       zenDestDir,
       dmgPath], ENGINE_DIR, true);
   }
