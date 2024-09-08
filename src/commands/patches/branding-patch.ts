@@ -375,10 +375,11 @@ pref("app.update.promptWaitTime", 691200);
 // app.update.url.details: a default value for the "More information about this
 // update" link supplied in the "An update is available" page of the update
 // wizard.
-pref("app.update.url.manual", "https://zen-browser.app/");
+pref("app.update.url.manual", "https://zen-browser.app/download/");
 pref("app.update.url.details", "https://zen-browser.app/release-notes/latest/");
-pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/latest/");
-pref("app.releaseNotesURL.aboutDialog", "https://zen-browser.app/");
+pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/latest/%VERSION%/");
+pref("app.releaseNotesURL.aboutDialog", "https://www.zen-browser.app/release-notes/%VERSION%/");
+pref("app.releaseNotesURL.prompt", "https://zen-browser.app/release-notes/%VERSION%/");
 
 // Number of usages of the web console.
 // If this is less than 5, then pasting code into the web console is disabled
