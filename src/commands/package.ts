@@ -95,6 +95,7 @@ export const surferPackage = async () => {
     log.info('Signing the app')
     if (process.env.MACOS_APPLE_DEVELOPER_ID) {
       log.info('Signing the app with the developer id')
+      await dispatch('chmod', ['+x', '../build/codesign/codesign.bash'], ENGINE_DIR, true);
       await dispatch('../build/codesign/codesign.bash', [
         '-a', join(zenMacDestDir, 'Zen Browser.app'),
         '-i', process.env.MACOS_APPLE_DEVELOPER_ID,
