@@ -99,8 +99,8 @@ export const surferPackage = async () => {
       await dispatch('../build/codesign/codesign.bash', [
         '-a', join(zenMacDestDir, 'Zen Browser.app'),
         '-i', process.env.MACOS_APPLE_DEVELOPER_ID,
-        '-b', '../build/codesign/mac/browser.developer.entitlements.xml',
-        '-p', '../build/codesign/mac/plugin-container.developer.entitlements.xml'
+        '-b', '../build/codesign/browser.developer.entitlements.xml',
+        '-p', '../build/codesign/plugin-container.developer.entitlements.xml'
       ], ENGINE_DIR, true);
     }
     log.info('Stapling the app');
