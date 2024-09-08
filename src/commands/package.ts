@@ -74,8 +74,10 @@ export const surferPackage = async () => {
   await dispatch(machPath, ['package-multi-locale', '--locales', ...(await getLocales())], ENGINE_DIR, true)
 
   // If we are on macos, run "mach macos-sign" to sign the app and repack it
+  
+  const currentCWD = process.cwd()
+  const zenMacDestDir = join(currentCWD, 'zen-browser');
   if ((process as any).surferPlatform == 'darwin') {
-    const currentCWD = process.cwd()
     log.info('Signing the app')
 
     const dmgFile = (await readdir(join(OBJ_DIR, 'dist'))).find((file) => file.endsWith('.dmg'))
@@ -88,12 +90,11 @@ export const surferPackage = async () => {
     // extract the dmg file
     const dmgPath = join(OBJ_DIR, 'dist', dmgFile);
     
-    const zenDestDir = join(currentCWD, 'zen-browser');
-    await dispatch(machPath, ['python', '-m', 'mozbuild.action.unpack_dmg', dmgPath, zenDestDir], ENGINE_DIR, true);
+    await dispatch(machPath, ['python', '-m', 'mozbuild.action.unpack_dmg', dmgPath, zenMacDestDir], ENGINE_DIR, true);
     
     log.info('Signing the app')
     await dispatch(machPath, ['macos-sign', '--verbose', 
-      '-a', join(zenDestDir, 'Zen Browser.app'),
+      '-a', join(zenMacDestDir, 'Zen Browser.app'),
       '-r',
       '--rcodesign-p12-file', `${currentCWD}/certificate.p12`,
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
@@ -102,14 +103,13 @@ export const surferPackage = async () => {
     log.info('Repacking the app');
 
     const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey);
-
     await remove(dmgPath)
     await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
       '--volume-name', 'Zen Browser',
       '--icon', join(brandingPath, 'firefox.icns'),
       '--background', join(brandingPath, 'background.png'),
       '--dsstore', join(brandingPath, 'dsstore'),
-      zenDestDir,
+      zenMacDestDir,
       dmgPath], ENGINE_DIR, true);
   }
 
@@ -182,7 +182,7 @@ export const surferPackage = async () => {
     }
   }
 
-  const marPath = await createMarFile(version, channel, brandingDetails.release.github);
+  const marPath = await createMarFile(version, channel, brandingDetails.release.github, zenMacDestDir)
   dynamicConfig.set('marPath', marPath)
 
   await generateBrowserUpdateFiles()
@@ -203,7 +203,7 @@ function getCurrentBrandName(): string {
   return config.brands[brand].brandFullName
 }
 
-async function createMarFile(version: string, channel: string, github?: { repo: string }) {
+async function createMarFile(version: string, channel: string, github?: { repo: string }, zenMacDestDir?: string): Promise<string> {
   log.info(`Creating mar file...`)
   let marBinary: string = windowsPathToUnix(
     join(OBJ_DIR, 'dist/host/bin', 'mar')
@@ -217,8 +217,8 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
   // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
   // the contents of the folder <obj dir>/dist/${binaryName}
   const binary =
-    (process as any).surferPlatform == 'darwin'
-      ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
+    (process as any).surferPlatform == 'darwin' && zenMacDestDir
+      ? join(zenMacDestDir, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
   const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
