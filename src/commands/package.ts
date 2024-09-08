@@ -87,18 +87,10 @@ export const surferPackage = async () => {
     log.debug('Copying the dmg file to the current working directory')
     // extract the dmg file
     const dmgPath = join(OBJ_DIR, 'dist', dmgFile);
-    await dispatch('hdiutil', ['attach', dmgPath], currentCWD, true)
-    const mountedPath = (await readdir('/Volumes')).find((file) => file.startsWith('Zen Browser'))
-    if (!mountedPath) {
-      log.error('Could not find the mounted path')
-      return;
-    }
-    const zenDestDir = join(OBJ_DIR, 'dist', 'zen');
-    await rmSync(join(zenDestDir, 'Zen Browser.app'), { recursive: true })
-    log.info('Copying the app to the current working directory, into the dist folder')
-    await dispatch('cp', ['-R', `/Volumes/${mountedPath}/Zen Browser.app`, zenDestDir], ENGINE_DIR, true)
-    log.info('Detaching the dmg')
-    await dispatch('hdiutil', ['detach', `/Volumes/${mountedPath}`], currentCWD, true)
+    
+    const zenDestDir = join(currentCWD, 'zen-browser');
+    await dispatch(machPath, ['python', '-m', 'mozbuild.action.unpack_dmg', dmgPath, zenDestDir], ENGINE_DIR, true);
+    
     log.info('Signing the app')
     await dispatch(machPath, ['macos-sign', '--verbose', 
       '-a', join(zenDestDir, 'Zen Browser.app'),
@@ -107,10 +99,16 @@ export const surferPackage = async () => {
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
       '-c', 'release',
       '-e', 'production'], ENGINE_DIR, true);
-    log.info('Repacking the app')
+    log.info('Repacking the app');
+
+    const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey);
+
     await remove(dmgPath)
     await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
       '--volume-name', 'Zen Browser',
+      '--icon', join(brandingPath, 'firefox.icns'),
+      '--background', join(brandingPath, 'background.png'),
+      '--dsstore', join(brandingPath, 'dsstore'),
       zenDestDir,
       dmgPath], ENGINE_DIR, true);
   }
