@@ -100,8 +100,9 @@ export const surferPackage = async () => {
       '--rcodesign-p12-password-file', `${currentCWD}/certificate.p12.password`,
       '-c', 'release',
       '-e', 'production'], ENGINE_DIR, true);
+    log.info('Stapling the app');
+    await dispatch("xcrun", ['stapler', 'staple', join(zenMacDestDir, 'Zen Browser.app')], ENGINE_DIR, true);
     log.info('Repacking the app');
-
     const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey);
     await remove(dmgPath)
     await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
