@@ -241,6 +241,7 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
       MAR_CHANNEL_ID: channel,
       MAR: marBinary,
     },
+    shell: process.env.SURFER_SIGNING_MODE ? 'unix' : 'default',
   })
   return marPath
 }

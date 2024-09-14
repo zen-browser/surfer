@@ -93,7 +93,10 @@ if (process.platform == 'win32') {
 
       BASH_PATH = execa.sync('where.exe bash.exe').stdout.toString()
       if (!BASH_PATH.includes('bash.exe')) {
-        log.error('Could not find bash, aborting')
+        BASH_PATH = process.env.SURFER_SIGNING_MODE ? 'C:\\mozilla-build\\msys2\\usr\\bin\\bash.exe' : '';
+        if (BASH_PATH === '') {
+          log.error('Could not find bash, aborting')
+        }
       }
     }
     // Replace .exe with .EXE
