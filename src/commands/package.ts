@@ -229,6 +229,10 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
       : join(OBJ_DIR, 'dist', config.binaryName)
 
   const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
+  console.log('marPath', marPath)
+  console.log('binary', binary)
+  console.log('marBinary', marBinary)
+  console.log('SIGNING_MODE', process.env.SURFER_SIGNING_MODE)
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
