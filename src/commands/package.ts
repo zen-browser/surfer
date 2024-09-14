@@ -232,7 +232,7 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
-      windowsPathToUnix(join(DIST_DIR)),
+      join(DIST_DIR),
       binary,
     ],
     cwd: ENGINE_DIR,
