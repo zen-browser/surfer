@@ -54,67 +54,70 @@ export const surferPackage = async () => {
     )}...`
   )
 
-  await dispatch(machPath, arguments_, ENGINE_DIR, true)
-
-  // Merge language packs
-  for (const locale of await getLocales()) {
-    const arguments_ = ["build", `merge-${locale}`]
-
-    log.info(
-      `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
-        arguments_.slice(1, 0)
-      )}...`
-    )
-
-    await dispatch(machPath, arguments_, ENGINE_DIR, true)
-  }
-
-  log.info("Copying language packs")
-
-  await dispatch(machPath, ['package-multi-locale', '--locales', ...(await getLocales())], ENGINE_DIR, true)
-
-  // If we are on macos, run "mach macos-sign" to sign the app and repack it
-  
   const currentCWD = process.cwd()
   const zenMacDestDir = join(currentCWD, 'zen-browser');
-  if ((process as any).surferPlatform == 'darwin') {
-    log.info('Signing the app')
+  
+  if (!process.env.SURFER_SIGNING_MODE) {
+    await dispatch(machPath, arguments_, ENGINE_DIR, true)
 
-    const dmgFile = (await readdir(join(OBJ_DIR, 'dist'))).find((file) => file.endsWith('.dmg'))
-    if (!dmgFile) {
-      log.error('Could not find the dmg file')
-      return;
+    // Merge language packs
+    for (const locale of await getLocales()) {
+      const arguments_ = ["build", `merge-${locale}`]
+
+      log.info(
+        `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
+          arguments_.slice(1, 0)
+        )}...`
+      )
+
+      await dispatch(machPath, arguments_, ENGINE_DIR, true)
     }
 
-    log.debug('Copying the dmg file to the current working directory')
-    // extract the dmg file
-    const dmgPath = join(OBJ_DIR, 'dist', dmgFile);
+    log.info("Copying language packs")
+
+    await dispatch(machPath, ['package-multi-locale', '--locales', ...(await getLocales())], ENGINE_DIR, true)
+
+    // If we are on macos, run "mach macos-sign" to sign the app and repack it
     
-    await dispatch(machPath, ['python', '-m', 'mozbuild.action.unpack_dmg', dmgPath, zenMacDestDir], ENGINE_DIR, true);
-    
-    log.info('Signing the app')
-    if (process.env.MACOS_APPLE_DEVELOPER_ID) {
-      log.info('Signing the app with the developer id')
-      await dispatch('chmod', ['+x', '../build/codesign/codesign.bash'], ENGINE_DIR, true);
-      await dispatch('../build/codesign/codesign.bash', [
-        '-a', join(zenMacDestDir, 'Zen Browser.app'),
-        '-i', process.env.MACOS_APPLE_DEVELOPER_ID,
-        '-b', '../build/codesign/browser.developer.entitlements.xml',
-        '-p', '../build/codesign/plugin-container.developer.entitlements.xml'
-      ], ENGINE_DIR, true);
+    if ((process as any).surferPlatform == 'darwin') {
+      log.info('Signing the app')
+
+      const dmgFile = (await readdir(join(OBJ_DIR, 'dist'))).find((file) => file.endsWith('.dmg'))
+      if (!dmgFile) {
+        log.error('Could not find the dmg file')
+        return;
+      }
+
+      log.debug('Copying the dmg file to the current working directory')
+      // extract the dmg file
+      const dmgPath = join(OBJ_DIR, 'dist', dmgFile);
+      
+      await dispatch(machPath, ['python', '-m', 'mozbuild.action.unpack_dmg', dmgPath, zenMacDestDir], ENGINE_DIR, true);
+      
+      log.info('Signing the app')
+      if (process.env.MACOS_APPLE_DEVELOPER_ID) {
+        log.info('Signing the app with the developer id')
+        await dispatch('chmod', ['+x', '../build/codesign/codesign.bash'], ENGINE_DIR, true);
+        await dispatch('../build/codesign/codesign.bash', [
+          '-a', join(zenMacDestDir, 'Zen Browser.app'),
+          '-i', process.env.MACOS_APPLE_DEVELOPER_ID,
+          '-b', '../build/codesign/browser.developer.entitlements.xml',
+          '-p', '../build/codesign/plugin-container.developer.entitlements.xml'
+        ], ENGINE_DIR, true);
+      }
+      log.info('Stapling the app');
+      await dispatch("xcrun", ['stapler', 'staple', join(zenMacDestDir, 'Zen Browser.app')], ENGINE_DIR, true);
+      log.info('Repacking the app');
+      const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey);
+      await remove(dmgPath)
+      await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
+        '--volume-name', 'Zen Browser',
+        '--icon', join(brandingPath, 'firefox.icns'),
+        '--background', join(brandingPath, 'background.png'),
+        '--dsstore', join(brandingPath, 'dsstore'),
+        zenMacDestDir,
+        dmgPath], ENGINE_DIR, true);
     }
-    log.info('Stapling the app');
-    await dispatch("xcrun", ['stapler', 'staple', join(zenMacDestDir, 'Zen Browser.app')], ENGINE_DIR, true);
-    log.info('Repacking the app');
-    const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey);
-    await remove(dmgPath)
-    await dispatch(machPath, ['python', '-m', 'mozbuild.action.make_dmg',
-      '--volume-name', 'Zen Browser',
-      '--icon', join(brandingPath, 'firefox.icns'),
-      '--background', join(brandingPath, 'background.png'),
-      '--dsstore', join(brandingPath, 'dsstore'),
-      zenMacDestDir,
-      dmgPath], ENGINE_DIR, true);
   }
 
   log.info('Copying results up')
