@@ -65,6 +65,11 @@ export const configDispatch = (
     }
   }
 
+  const args = [];
+  for (const arg of config?.args || []) {
+    // replace white space with escaped white space
+    args.push(arg.replace(/\s/g, '\\ '))
+  }
   return new Promise((resolve) => {
     const proc = execa(cmd, config?.args, {
       cwd: config?.cwd || process.cwd(),
