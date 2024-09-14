@@ -232,8 +232,8 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
-      join(DIST_DIR),
-      binary,
+      windowsPathToUnix(join(DIST_DIR)),
+      windowsPathToUnix(binary),
     ],
     cwd: ENGINE_DIR,
     env: {
