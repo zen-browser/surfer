@@ -230,7 +230,7 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
       ? join(zenMacDestDir, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
-  const marPath = windowsPathToUnix(join(DIST_DIR, 'output.mar'))
+  const marPath = process.env.MAR ?? windowsPathToUnix(join(DIST_DIR, 'output.mar'));
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
