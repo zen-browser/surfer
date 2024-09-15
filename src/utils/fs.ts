@@ -22,7 +22,11 @@ import { log } from '../log'
  * @returns A unix path
  */
 export const windowsPathToUnix = (path: string): string =>
-  (process as any).platform == 'win32' ? path.replace(/\\/g, '/') : path
+  (process as any).platform == 'win32' 
+    ? 
+     (process.env.SURFER_SIGNING_MODE ? "/c" : "") 
+      + path.replace(/[\\]+/g, '/').replace(/^([a-zA-Z]+:|\.\/)/, '') 
+    : path
 
 export async function walkDirectory(directory: string): Promise<string[]> {
   const output = []

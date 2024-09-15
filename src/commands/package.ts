@@ -228,18 +228,18 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
       ? join(zenMacDestDir, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
-  const marPath = process.env.MAR ?? windowsPathToUnix(join(DIST_DIR, 'output.mar'));
+  const marPath = join(DIST_DIR, 'output.mar');
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
-      windowsPathToUnix(join(DIST_DIR)),
+      windowsPathToUnix(DIST_DIR),
       windowsPathToUnix(binary),
     ],
     cwd: ENGINE_DIR,
     env: {
       MOZ_PRODUCT_VERSION: version,
       MAR_CHANNEL_ID: channel,
-      MAR: marBinary,
+      MAR: process.env.MAR ? windowsPathToUnix(process.env.MAR) : marBinary,
     },
     shell: process.env.SURFER_SIGNING_MODE ? 'unix' : 'default',
   })
