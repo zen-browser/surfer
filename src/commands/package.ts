@@ -189,12 +189,10 @@ export const surferPackage = async () => {
     }
   }
 
-  if (!process.env.SURFER_SIGNING_MODE) {
-    const marPath = await createMarFile(version, channel, brandingDetails.release.github, zenMacDestDir)
-    dynamicConfig.set('marPath', marPath)
+  const marPath = await createMarFile(version, channel, brandingDetails.release.github, zenMacDestDir)
+  dynamicConfig.set('marPath', marPath)
 
-    await generateBrowserUpdateFiles()
-  }
+  await generateBrowserUpdateFiles()
 
   log.info()
   log.info(`Output written to ${DIST_DIR}`)
