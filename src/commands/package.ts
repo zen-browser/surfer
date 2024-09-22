@@ -189,12 +189,10 @@ export const surferPackage = async () => {
     }
   }
 
-  if (!process.env.SURFER_SIGNING_MODE) {
-    const marPath = await createMarFile(version, channel, brandingDetails.release.github, zenMacDestDir)
-    dynamicConfig.set('marPath', marPath)
+  const marPath = await createMarFile(version, channel, brandingDetails.release.github, zenMacDestDir)
+  dynamicConfig.set('marPath', marPath)
 
-    await generateBrowserUpdateFiles()
-  }
+  await generateBrowserUpdateFiles()
 
   log.info()
   log.info(`Output written to ${DIST_DIR}`)
@@ -230,18 +228,19 @@ async function createMarFile(version: string, channel: string, github?: { repo: 
       ? join(zenMacDestDir, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
-  const marPath = process.env.MAR ?? windowsPathToUnix(join(DIST_DIR, 'output.mar'));
+  const marPath = resolve(DIST_DIR, 'output.mar');
+  log.debug(`Writing MAR to ${DIST_DIR} from ${binary}`);
   await configDispatch('./tools/update-packaging/make_full_update.sh', {
     args: [
       // The mar output location
-      windowsPathToUnix(join(DIST_DIR)),
+      windowsPathToUnix(DIST_DIR),
       windowsPathToUnix(binary),
     ],
     cwd: ENGINE_DIR,
     env: {
       MOZ_PRODUCT_VERSION: version,
       MAR_CHANNEL_ID: channel,
-      MAR: marBinary,
+      MAR: process.env.MAR ? windowsPathToUnix(process.env.MAR) : marBinary,
     },
     shell: process.env.SURFER_SIGNING_MODE ? 'unix' : 'default',
   })

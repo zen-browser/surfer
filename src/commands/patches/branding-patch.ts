@@ -377,7 +377,7 @@ pref("app.update.promptWaitTime", 691200);
 // wizard.
 pref("app.update.url.manual", "https://zen-browser.app/download/");
 pref("app.update.url.details", "https://zen-browser.app/release-notes/latest/");
-pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/latest/%VERSION%/");
+pref("app.releaseNotesURL", "https://zen-browser.app/release-notes/%VERSION%/");
 pref("app.releaseNotesURL.aboutDialog", "https://www.zen-browser.app/release-notes/%VERSION%/");
 pref("app.releaseNotesURL.prompt", "https://zen-browser.app/release-notes/%VERSION%/");
 
