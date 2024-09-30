@@ -2,12 +2,12 @@
 
 function getPlatform() {
   if (process.env.SURFER_PLATFORM) {
-    return process.env.SURFER_PLATFORM;
+    return process.env.SURFER_PLATFORM
   }
-  return process.platform;
+  return process.platform
 }
 
-Object.defineProperty(process, 'surferPlatform', { value: getPlatform() });
+Object.defineProperty(process, 'surferPlatform', { value: getPlatform() })
 
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -48,7 +48,7 @@ export const bin_name = BIN_NAME
 
 const programVersions = []
 
-export const compatMode = process.env.SURFER_COMPAT == 'true';
+export const compatMode = process.env.SURFER_COMPAT == 'true'
 
 for (const brand in config.brands) {
   const brandConfig = config.brands[brand]

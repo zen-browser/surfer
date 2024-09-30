@@ -41,8 +41,13 @@ export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
 const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
 
-const REQUIRED_FILES = ['logo.png', 'logo-mac.png', 'firefox.ico', 'firefox64.ico']
-const BRANDING_NSIS = 'branding.nsi';
+const REQUIRED_FILES = [
+  'logo.png',
+  'logo-mac.png',
+  'firefox.ico',
+  'firefox64.ico',
+]
+const BRANDING_NSIS = 'branding.nsi'
 
 const CSS_REPLACE_REGEX = new RegExp(
   '#130829|hsla\\(235, 43%, 10%, .5\\)',
@@ -87,11 +92,11 @@ async function setupImages(configPath: string, outputPath: string) {
 
   // Firefox doesn't use 512 by 512, but we need it to generate ico files later
   await every([16, 22, 24, 32, 48, 64, 128, 256, 512], async (size) => {
-    const logoPath = join(configPath, `logo${size}.png`);
-    if (!filesExist([logoPath])) throw new Error(`Missing logo${size}.png`);
+    const logoPath = join(configPath, `logo${size}.png`)
+    if (!filesExist([logoPath])) throw new Error(`Missing logo${size}.png`)
 
-    const outputPathLogo = join(outputPath, `default${size}.png`);
-    await copyFile(logoPath, outputPathLogo);
+    const outputPathLogo = join(outputPath, `default${size}.png`)
+    await copyFile(logoPath, outputPathLogo)
     return true
   })
 
@@ -178,9 +183,11 @@ async function copyMozFiles(
     (file) => !existsSync(join(outputPath, file.replace(BRANDING_FF, '')))
   )
 
-  const css = files.filter((file) => extname(file).includes('css'));
+  const css = files.filter((file) => extname(file).includes('css'))
 
-  const everythingElse = files.filter((file) => !css.includes(file) && !file.includes(BRANDING_NSIS));
+  const everythingElse = files.filter(
+    (file) => !css.includes(file) && !file.includes(BRANDING_NSIS)
+  )
 
   for (const [contents, path] of css
     .map((filePath) => [
@@ -196,12 +203,22 @@ async function copyMozFiles(
     writeFileSync(path, contents)
   }
 
-  const brandingNsis = files.filter((file) => file.includes(BRANDING_NSIS));
-  console.assert(brandingNsis.length == 1, 'There should only be one branding.nsi file');
-  const outputBrandingNsis = join(outputPath, brandingNsis[0].replace(BRANDING_FF, ''));
-  const configureProfileBrandingPath = join(outputPath, 'pref', 'firefox-branding.js');
-  log.debug('Configuring branding.nsi into ' + outputBrandingNsis);
-  configureBrandingNsis(outputBrandingNsis, brandingConfig);
+  const brandingNsis = files.filter((file) => file.includes(BRANDING_NSIS))
+  console.assert(
+    brandingNsis.length == 1,
+    'There should only be one branding.nsi file'
+  )
+  const outputBrandingNsis = join(
+    outputPath,
+    brandingNsis[0].replace(BRANDING_FF, '')
+  )
+  const configureProfileBrandingPath = join(
+    outputPath,
+    'pref',
+    'firefox-branding.js'
+  )
+  log.debug('Configuring branding.nsi into ' + outputBrandingNsis)
+  configureBrandingNsis(outputBrandingNsis, brandingConfig)
 
   // Copy everything else from the default firefox branding directory
   for (const file of everythingElse) {
@@ -209,7 +226,7 @@ async function copyMozFiles(
     copyFileSync(file, join(outputPath, file.replace(BRANDING_FF, '')))
   }
 
-  configureProfileBranding(configureProfileBrandingPath, brandingConfig);
+  configureProfileBranding(configureProfileBrandingPath, brandingConfig)
 }
 
 // =============================================================================
@@ -243,18 +260,23 @@ export async function apply(name: string): Promise<void> {
   await copyMozFiles(outputPath, brandingConfig)
   await addOptionalIcons(configPath, outputPath)
 
-  setUpdateURLs();
+  setUpdateURLs()
 }
 
-function configureBrandingNsis(brandingNsis: string, brandingConfig: {
-  backgroundColor: string
-  brandShorterName: string
-  brandShortName: string
-  brandFullName: string
-  brandingGenericName: string
-  brandingVendor: string
-}) {
-  writeFileSync(brandingNsis, `
+function configureBrandingNsis(
+  brandingNsis: string,
+  brandingConfig: {
+    backgroundColor: string
+    brandShorterName: string
+    brandShortName: string
+    brandFullName: string
+    brandingGenericName: string
+    brandingVendor: string
+  }
+) {
+  writeFileSync(
+    brandingNsis,
+    `
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -331,35 +353,44 @@ function configureBrandingNsis(brandingNsis: string, brandingConfig: {
 !define INSTALL_INSTALLING_TEXT_COLOR 0xFFFFFF
 # This color is written as 0x00BBGGRR because it's actually a COLORREF value.
 !define PROGRESS_BAR_BACKGROUND_COLOR 0xFFAA00
-`);
+`
+  )
 }
 
 function addOptionalIcons(brandingPath: string, outputPath: string) {
   // move all icons in the top directory and inside "content/" into the branding directory
-  const icons = readdirSync(brandingPath);
-  const iconsContent = readdirSync(join(brandingPath, 'content'));
+  const icons = readdirSync(brandingPath)
+  const iconsContent = readdirSync(join(brandingPath, 'content'))
 
   for (const icon of icons) {
-    if (icon.includes('content')) continue;
-    log.info(`Copying ${icon} to ${outputPath}`);
-    copyFileSync(join(brandingPath, icon), join(outputPath, icon));
+    if (icon.includes('content')) continue
+    log.info(`Copying ${icon} to ${outputPath}`)
+    copyFileSync(join(brandingPath, icon), join(outputPath, icon))
   }
 
   for (const icon of iconsContent) {
-    log.info(`Copying ${icon} to ${outputPath}`);
-    copyFileSync(join(brandingPath, 'content', icon), join(outputPath, 'content', icon));
+    log.info(`Copying ${icon} to ${outputPath}`)
+    copyFileSync(
+      join(brandingPath, 'content', icon),
+      join(outputPath, 'content', icon)
+    )
   }
 }
- 
-function configureProfileBranding(brandingPath: string, brandingConfig: {
-  backgroundColor: string
-  brandShorterName: string
-  brandShortName: string
-  brandFullName: string
-  brandingGenericName: string
-  brandingVendor: string
-}) {
-  writeFileSync(brandingPath, `
+
+function configureProfileBranding(
+  brandingPath: string,
+  brandingConfig: {
+    backgroundColor: string
+    brandShorterName: string
+    brandShortName: string
+    brandFullName: string
+    brandingGenericName: string
+    brandingVendor: string
+  }
+) {
+  writeFileSync(
+    brandingPath,
+    `
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -384,15 +415,16 @@ pref("app.releaseNotesURL.prompt", "https://zen-browser.app/release-notes/%VERSI
 // Number of usages of the web console.
 // If this is less than 5, then pasting code into the web console is disabled
 pref("devtools.selfxss.count", 5);
-`);
+`
+  )
 }
 
 function setUpdateURLs() {
-  const sufix = (compatMode && (process as any).surferPlatform !== 'macos')
-    ? '-generic' : '';
-  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${sufix}/update.xml`;
-  const appIni = join(ENGINE_DIR, 'build', 'application.ini.in');
-  const appIniContents = readFileSync(appIni).toString();
-  const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL);
-  writeFileSync(appIni, updatedAppIni);
+  const sufix =
+    compatMode && (process as any).surferPlatform !== 'macos' ? '-generic' : ''
+  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${sufix}/update.xml`
+  const appIni = join(ENGINE_DIR, 'build', 'application.ini.in')
+  const appIniContents = readFileSync(appIni).toString()
+  const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL)
+  writeFileSync(appIni, updatedAppIni)
 }

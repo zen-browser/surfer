@@ -173,7 +173,7 @@ export const build = async (options: Options): Promise<void> => {
 
     log.info('Starting build...')
 
-    let exit = await genericBuild(prettyHost, options.ui);
-    process.exit(exit ? 0 : 1);
+    let exit = await genericBuild(prettyHost, options.ui)
+    process.exit(exit ? 0 : 1)
   }
 }

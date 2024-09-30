@@ -29,4 +29,4 @@ export interface CmdOption {
 
 export type CmdFlagPlatform = NodeJS.Platform
 
-declare module 'mount-dmg';
+declare module 'mount-dmg'

@@ -20,7 +20,7 @@ import {
   resolveAddonDownloadUrl,
   unpackAddon,
 } from './addon'
-import { configPath } from '../../utils';
+import { configPath } from '../../utils'
 import fs from 'fs-extra'
 
 export function shouldSetupFirefoxSource() {
@@ -68,16 +68,27 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacking ${resolve(MELON_TMP_DIR, name)} to ${ENGINE_DIR}`)
   if (process.platform === 'win32') {
     log.info('Unpacking Firefox source on Windows (7z)')
-    await execa('7z', ['x', resolve(MELON_TMP_DIR, name), '-o' + resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar'))]);
+    await execa('7z', [
+      'x',
+      resolve(MELON_TMP_DIR, name),
+      '-o' + resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar')),
+    ])
     log.info('Unpacking Firefox source again without the .xz extension')
-    await execa('7z', ['x', resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar')), '-o' + MELON_TMP_DIR]);
-    const archiveDir = resolve(MELON_TMP_DIR, 'firefox-' + config.version.version);
+    await execa('7z', [
+      'x',
+      resolve(MELON_TMP_DIR, name.replace('.tar.xz', '.tar')),
+      '-o' + MELON_TMP_DIR,
+    ])
+    const archiveDir = resolve(
+      MELON_TMP_DIR,
+      'firefox-' + config.version.version
+    )
     if (existsSync(ENGINE_DIR)) {
       // remove the existing engine directory
-      fs.removeSync(ENGINE_DIR);
+      fs.removeSync(ENGINE_DIR)
     }
-    log.info('Moving Firefox source to engine directory');
-    fs.moveSync(archiveDir, ENGINE_DIR);
+    log.info('Moving Firefox source to engine directory')
+    fs.moveSync(archiveDir, ENGINE_DIR)
     return
   }
 
@@ -91,7 +102,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
       ENGINE_DIR,
     ].filter(Boolean) as string[],
     {
-      shell: BASH_PATH
+      shell: BASH_PATH,
     }
   )
   log.info(`Unpacked Firefox source to ${ENGINE_DIR}`)

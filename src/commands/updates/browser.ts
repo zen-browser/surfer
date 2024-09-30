@@ -32,7 +32,7 @@ const ausPlatformsMap = {
     'Darwin_x86_64-gcc3',
   ],
   macosArm: ['Darwin_aarch64-gcc3'],
-  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64']
+  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
 }
 
 export async function getPlatformConfig() {
@@ -52,13 +52,19 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
 
   switch ((process as any).surferPlatform) {
     case 'win32': {
-      return compatMode ? releaseInfo.archives["windows-compat"] : releaseInfo.archives["windows"];
+      return compatMode
+        ? releaseInfo.archives['windows-compat']
+        : releaseInfo.archives['windows']
     }
     case 'darwin': {
-      return compatMode ? releaseInfo.archives["macos-x64"] : releaseInfo.archives["macos-aarch64"];
+      return compatMode
+        ? releaseInfo.archives['macos-x64']
+        : releaseInfo.archives['macos-aarch64']
     }
     case 'linux': {
-      return compatMode ? releaseInfo.archives["linux-compat"] : releaseInfo.archives["linux"];
+      return compatMode
+        ? releaseInfo.archives['linux-compat']
+        : releaseInfo.archives['linux']
     }
   }
 }
@@ -71,7 +77,12 @@ function getReleaseMarURL(releaseInfo: ReleaseInfo) {
 
   // The user is using github to distribute release binaries for this version.
   if (releaseInfo.github) {
-    completeMarURL = `https://github.com/${releaseInfo.github.repo}/releases/download/${releaseInfo.displayVersion}/${releaseMarName}`
+    let releaseVersion = releaseInfo.displayVersion
+    const channel = dynamicConfig.get('brand') as string
+    if (channel === 'twilight') {
+      releaseVersion = 'twilight'
+    }
+    completeMarURL = `https://github.com/${releaseInfo.github.repo}/releases/download/${releaseVersion}/${releaseMarName}`
     log.info(`Using '${completeMarURL}' as the distribution url`)
   } else {
     log.warning(
@@ -96,7 +107,8 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  const suffix = (compatMode && (process as any).surferPlatform !== 'macos') ? '-generic' : ''
+  const suffix =
+    compatMode && (process as any).surferPlatform !== 'macos' ? '-generic' : ''
   const xmlPath = join(
     DIST_DIR,
     'update',
