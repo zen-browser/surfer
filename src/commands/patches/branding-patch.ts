@@ -104,11 +104,12 @@ async function setupImages(configPath: string, outputPath: string) {
   if ((process as any).surferPlatform == 'darwin') {
     log.debug('Generating Mac Icons')
     log.debug(`Using MacOS icon: ${join(configPath, 'logo-mac.png')}`)
+    log.debug(`Output path: ${outputPath}`)
     const temporary = join(MELON_TMP_DIR, 'macos_icon_info.iconset')
 
     if (existsSync(temporary)) await rm(temporary, { recursive: true })
 
-    asyncIcns.convert({
+    await asyncIcns.convert({
       input: join(configPath, 'logo-mac.png'),
       output: join(outputPath, 'firefox.icns'),
       sizes: [16, 32, 64, 128, 256, 512],
