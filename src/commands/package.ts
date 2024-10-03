@@ -119,7 +119,7 @@ export const surferPackage = async () => {
           '../build/codesign/codesign.bash',
           [
             '-a',
-            join(zenMacDestDir, 'Zen Browser.app'),
+            join(zenMacDestDir, `${getCurrentBrandName()}.app`),
             '-i',
             process.env.MACOS_APPLE_DEVELOPER_ID,
             '-b',
@@ -134,7 +134,7 @@ export const surferPackage = async () => {
       log.info('Stapling the app')
       await dispatch(
         'xcrun',
-        ['stapler', 'staple', join(zenMacDestDir, 'Zen Browser.app')],
+        ['stapler', 'staple', join(zenMacDestDir, `${getCurrentBrandName()}.app`)],
         ENGINE_DIR,
         true
       )
