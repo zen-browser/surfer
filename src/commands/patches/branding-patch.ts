@@ -397,7 +397,7 @@ function configureProfileBranding(
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-pref("startup.homepage_override_url", "https://zen-browser.app/welcome/");
+pref("startup.homepage_override_url", "https://zen-browser.app/whatsnew?v=%VERSION%");
 pref("startup.homepage_welcome_url", "https://zen-browser.app/welcome/");
 pref("startup.homepage_welcome_url.additional", "https://zen-browser.app/privacy-policy/");
 
