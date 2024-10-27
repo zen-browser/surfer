@@ -112,10 +112,12 @@ async function importInternalPatch(): Promise<Task> {
 }
 
 export async function applyPatches(): Promise<void> {
-  await new TaskList([
+  const canDoBrandingPatch = process.env.SURFER_NO_BRANDING_PATCH !== 'true'
+  let tasks = [
     await importInternalPatch(),
-    importMelonPatches(),
+    canDoBrandingPatch ? importMelonPatches() : undefined,
     await importFolders(),
     await importGitPatch(),
-  ]).run()
+  ].filter((task) => task !== undefined) as Task[]
+  await new TaskList(tasks).run()
 }
