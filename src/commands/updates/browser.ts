@@ -189,9 +189,10 @@ function getTargets(): string[] {
     return ausPlatformsMap.linux
   }
 
-  if ((process as any).surferPlatform == 'macos') {
+  if ((process as any).surferPlatform == 'darwin') {
     return ausPlatformsMap.macos
   }
+  return ausPlatformsMap.macos
 }
 
 export async function generateBrowserUpdateFiles() {
