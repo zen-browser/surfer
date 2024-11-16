@@ -151,19 +151,19 @@ async function writeUpdateFileToDisk(
     if (compatMode == 'x86_64') {
       suffix = '-generic';
     }
-    else if (compatMode == 'aarch64') {
-      suffix = '';
-    }
-  }
-  if ((process as any).surferPlatform == 'linux') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
     else if (compatMode == 'x86_64-v3') {
       suffix = '';
     }
     else if (compatMode == 'aarch64') {
       suffix = '-aarch64';
+    }
+  }
+  if ((process as any).surferPlatform == 'darwin') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '';
     }
   }
   const xmlPath = join(
