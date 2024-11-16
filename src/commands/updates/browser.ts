@@ -192,6 +192,7 @@ function getTargets(): string[] {
   if ((process as any).surferPlatform == 'macos') {
     return ausPlatformsMap.macos
   }
+}
 
 export async function generateBrowserUpdateFiles() {
   log.info('Creating browser AUS update files')
