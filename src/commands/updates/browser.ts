@@ -24,15 +24,22 @@ import {
  * https://searchfox.org/mozilla-central/source/taskcluster/gecko_taskgraph/util/partials.py
  */
 const ausPlatformsMap = {
-  linux64: ['Linux_x86_64-gcc3'],
-  macosIntel: [
+  linux: [
+    'Linux_x86_64-gcc3',
+    'Linux-aarch64-gcc3',
+  ],
+  macos: [
     'Darwin_x86_64-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3',
     'Darwin_x86_64-gcc3',
+    'Darwin_aarch64-gcc3',
   ],
-  macosArm: ['Darwin_aarch64-gcc3'],
-  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
+  windows: [
+    'WINNT_x86_64-msvc',
+    'WINNT_x86_64-msvc-x64',
+    'WINNT_aarch64-msvc-aarch64',
+  ],
 }
 
 export async function getPlatformConfig() {
@@ -52,19 +59,40 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
 
   switch ((process as any).surferPlatform) {
     case 'win32': {
-      return compatMode
-        ? releaseInfo.archives['windows-compat']
-        : releaseInfo.archives['windows']
+      switch (compatMode) {
+        case 'x86_64': {
+          releaseInfo.archives['windows-compat']
+        }
+        case 'x86_64-v3': {
+          releaseInfo.archives['windows']
+        }
+        case 'aarch64': {
+          releaseInfo.archives['windows-arm64'] 
+        }
+      }
     }
     case 'darwin': {
-      return compatMode
-        ? releaseInfo.archives['macos-x64']
-        : releaseInfo.archives['macos-aarch64']
+      switch (compatMode) {
+        case 'x86_64': {
+          releaseInfo.archives['macos-x64']
+        }
+        case 'aarch64': {
+          releaseInfo.archives['macos-aarch64'] 
+        }
+      }
     }
     case 'linux': {
-      return compatMode
-        ? releaseInfo.archives['linux-compat']
-        : releaseInfo.archives['linux']
+      switch (compatMode) {
+        case 'x86_64': {
+          releaseInfo.archives['linux-compat']
+        }
+        case 'x86_64-v3': {
+          releaseInfo.archives['linux']
+        }
+        case 'aarch64': {
+          releaseInfo.archives['linux-aarch64'] 
+        }
+      }
     }
   }
 }
@@ -107,8 +135,37 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  const suffix =
-    compatMode && (process as any).surferPlatform !== 'macos' ? '-generic' : ''
+  let suffix;
+  if ((process as any).surferPlatform == 'win32') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
+  if ((process as any).surferPlatform == 'linux') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '';
+    }
+  }
+  if ((process as any).surferPlatform == 'linux') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
   const xmlPath = join(
     DIST_DIR,
     'update',
@@ -125,22 +182,16 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return ausPlatformsMap.win64
+    return ausPlatformsMap.windows
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return ausPlatformsMap.linux64
+    return ausPlatformsMap.linux
   }
 
-  // Everything else will have to be darwin of some kind. So, for future possible
-  // Apple silicon support, we should chose between the two wisely
-  // TODO: This is a hack, fix it
-  if (!compatMode) {
-    return ausPlatformsMap.macosArm
+  if ((process as any).surferPlatform == 'macos') {
+    return ausPlatformsMap.macos
   }
-
-  return ausPlatformsMap.macosIntel
-}
 
 export async function generateBrowserUpdateFiles() {
   log.info('Creating browser AUS update files')
