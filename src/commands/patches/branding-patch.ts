@@ -453,7 +453,7 @@ function setUpdateURLs() {
       suffix = '-aarch64';
     }
   }
-  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${sufix}/update.xml`
+  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${suffix}/update.xml`
   const appIni = join(ENGINE_DIR, 'build', 'application.ini.in')
   const appIniContents = readFileSync(appIni).toString()
   const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL)
