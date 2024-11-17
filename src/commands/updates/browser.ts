@@ -74,7 +74,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
     case 'darwin': {
       switch (compatMode) {
         case 'x86_64': {
-          releaseInfo.archives['macos-x64']
+          releaseInfo.archives['macos-x86_64']
         }
         case 'aarch64': {
           releaseInfo.archives['macos-aarch64'] 
