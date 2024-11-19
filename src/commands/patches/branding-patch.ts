@@ -434,7 +434,7 @@ function setUpdateURLs() {
       suffix = '-aarch64';
     }
   }
-  if ((process as any).surferPlatform == 'linux') {
+  if ((process as any).surferPlatform == 'darwin') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
     }
