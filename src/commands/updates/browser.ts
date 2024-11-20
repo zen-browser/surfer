@@ -26,7 +26,7 @@ import {
 const ausPlatformsMap = {
   linux: [
     'Linux_x86_64-gcc3',
-    'Linux-aarch64-gcc3',
+    'Linux_aarch64-gcc3',
   ],
   macos: [
     'Darwin_x86_64-gcc3-u-i386-x86_64',
