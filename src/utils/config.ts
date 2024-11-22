@@ -67,7 +67,7 @@ export interface ReleaseInfo {
     'windows-arm64'?: string
 
     'macos-aarch64'?: string
-    'macos-x86_64'?: string
+    'macos-x64'?: string
 
     linux?: string
     'linux-compat'?: string
