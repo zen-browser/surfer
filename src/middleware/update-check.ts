@@ -18,6 +18,6 @@ export const updateCheck = async (): Promise<void> => {
   } catch (error) {
     log.warning(`Failed to check for updates.`)
     log.askForReport()
-    log.error(error)
+    //log.error(error)
   }
 }
