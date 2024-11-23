@@ -422,9 +422,38 @@ pref("devtools.selfxss.count", 5);
 }
 
 function setUpdateURLs() {
-  const sufix =
-    compatMode && (process as any).surferPlatform !== 'macos' ? '-generic' : ''
-  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${sufix}/update.xml`
+  let suffix;
+  if ((process as any).surferPlatform == 'win32') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
+  if ((process as any).surferPlatform == 'darwin') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '';
+    }
+  }
+  if ((process as any).surferPlatform == 'linux') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
+  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${suffix}/update.xml`
   const appIni = join(ENGINE_DIR, 'build', 'application.ini.in')
   const appIniContents = readFileSync(appIni).toString()
   const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL)

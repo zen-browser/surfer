@@ -24,15 +24,22 @@ import {
  * https://searchfox.org/mozilla-central/source/taskcluster/gecko_taskgraph/util/partials.py
  */
 const ausPlatformsMap = {
-  linux64: ['Linux_x86_64-gcc3'],
-  macosIntel: [
+  linux: [
+    'Linux_x86_64-gcc3',
+    'Linux_aarch64-gcc3',
+  ],
+  macos: [
     'Darwin_x86_64-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3',
     'Darwin_x86_64-gcc3',
+    'Darwin_aarch64-gcc3',
   ],
-  macosArm: ['Darwin_aarch64-gcc3'],
-  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
+  windows: [
+    'WINNT_x86_64-msvc',
+    'WINNT_x86_64-msvc-x64',
+    'WINNT_aarch64-msvc-aarch64',
+  ],
 }
 
 export async function getPlatformConfig() {
@@ -50,23 +57,38 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
     return
   }
 
-  switch ((process as any).surferPlatform) {
-    case 'win32': {
-      return compatMode
-        ? releaseInfo.archives['windows-compat']
-        : releaseInfo.archives['windows']
+  let releaseMarName;
+  if ((process as any).surferPlatform == 'win32') {
+    if (compatMode == 'x86_64') {
+      releaseMarName = 'windows-generic.mar'
     }
-    case 'darwin': {
-      return compatMode
-        ? releaseInfo.archives['macos-x64']
-        : releaseInfo.archives['macos-aarch64']
+    else if (compatMode == 'x86_64-v3') {
+      releaseMarName = 'windows.mar'
     }
-    case 'linux': {
-      return compatMode
-        ? releaseInfo.archives['linux-compat']
-        : releaseInfo.archives['linux']
+    else if (compatMode == 'aarch64') {
+      releaseMarName = 'windows-arm64.mar'
     }
   }
+  if ((process as any).surferPlatform == 'darwin') {
+    if (compatMode == 'x86_64') {
+      releaseMarName = 'macos-x64.mar'
+    }
+    else if (compatMode == 'aarch64') {
+      releaseMarName = 'macos-aarch64.mar'
+    }
+  }
+  if ((process as any).surferPlatform == 'linux') {
+    if (compatMode == 'x86_64') {
+      releaseMarName = 'linux-generic.mar'
+    }
+    else if (compatMode == 'x86_64-v3') {
+      releaseMarName = 'linux.mar'
+    }
+    else if (compatMode == 'aarch64') {
+      releaseMarName = 'linux-aarch64.mar'
+    }
+  }
+  return releaseMarName
 }
 
 function getReleaseMarURL(releaseInfo: ReleaseInfo) {
@@ -107,8 +129,37 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  const suffix =
-    compatMode && (process as any).surferPlatform !== 'macos' ? '-generic' : ''
+  let suffix;
+  if ((process as any).surferPlatform == 'win32') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
+  if ((process as any).surferPlatform == 'linux') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'x86_64-v3') {
+      suffix = '';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '-aarch64';
+    }
+  }
+  if ((process as any).surferPlatform == 'darwin') {
+    if (compatMode == 'x86_64') {
+      suffix = '-generic';
+    }
+    else if (compatMode == 'aarch64') {
+      suffix = '';
+    }
+  }
   const xmlPath = join(
     DIST_DIR,
     'update',
@@ -125,21 +176,17 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return ausPlatformsMap.win64
+    return ausPlatformsMap.windows
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return ausPlatformsMap.linux64
+    return ausPlatformsMap.linux
   }
 
-  // Everything else will have to be darwin of some kind. So, for future possible
-  // Apple silicon support, we should chose between the two wisely
-  // TODO: This is a hack, fix it
-  if (!compatMode) {
-    return ausPlatformsMap.macosArm
+  if ((process as any).surferPlatform == 'darwin') {
+    return ausPlatformsMap.macos
   }
-
-  return ausPlatformsMap.macosIntel
+  return ausPlatformsMap.macos
 }
 
 export async function generateBrowserUpdateFiles() {
