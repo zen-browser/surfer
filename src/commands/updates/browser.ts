@@ -47,10 +47,6 @@ export async function getPlatformConfig() {
 }
 
 function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
-  if (!releaseInfo.archives) {
-    log.error('No archives found in the release information')
-    return
-  }
 
   let releaseMarName;
   if ((process as any).surferPlatform == 'win32') {
