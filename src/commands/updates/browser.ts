@@ -24,22 +24,17 @@ import {
  * https://searchfox.org/mozilla-central/source/taskcluster/gecko_taskgraph/util/partials.py
  */
 const ausPlatformsMap = {
-  linux: [
-    'Linux_x86_64-gcc3',
-    'Linux_aarch64-gcc3',
-  ],
-  macos: [
+  linux64: ['Linux_x86_64-gcc3'],
+  linuxArm: ['Linux_aarch64-gcc3'],
+  macosIntel: [
     'Darwin_x86_64-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3-u-i386-x86_64',
     'Darwin_x86-gcc3',
     'Darwin_x86_64-gcc3',
-    'Darwin_aarch64-gcc3',
   ],
-  windows: [
-    'WINNT_x86_64-msvc',
-    'WINNT_x86_64-msvc-x64',
-    'WINNT_aarch64-msvc-aarch64',
-  ],
+  macosArm: ['Darwin_aarch64-gcc3'],
+  win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
+  winArm: ['WINNT_aarch64-msvc-aarch64']
 }
 
 export async function getPlatformConfig() {
@@ -129,35 +124,20 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  let suffix;
+  let suffix = '';
   if ((process as any).surferPlatform == 'win32') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
-    }
-    else if (compatMode == 'x86_64-v3') {
-      suffix = '';
-    }
-    else if (compatMode == 'aarch64') {
-      suffix = '-aarch64';
     }
   }
   if ((process as any).surferPlatform == 'linux') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
     }
-    else if (compatMode == 'x86_64-v3') {
-      suffix = '';
-    }
-    else if (compatMode == 'aarch64') {
-      suffix = '-aarch64';
-    }
   }
   if ((process as any).surferPlatform == 'darwin') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
-    }
-    else if (compatMode == 'aarch64') {
-      suffix = '';
     }
   }
   const xmlPath = join(
@@ -176,17 +156,18 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return ausPlatformsMap.windows
+    return compatMode == 'aarch64' ? ausPlatformsMap.winArm : ausPlatformsMap.win64;
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return ausPlatformsMap.linux
+    return compatMode == 'aarch64' ?  ausPlatformsMap.linuxArm : ausPlatformsMap.linux64;
   }
 
   if ((process as any).surferPlatform == 'darwin') {
-    return ausPlatformsMap.macos
+    return compatMode == 'aarch64' ? ausPlatformsMap.macosArm : ausPlatformsMap.macosIntel;
   }
-  return ausPlatformsMap.macos
+  log.error('Unknown platform')
+  return [];
 }
 
 export async function generateBrowserUpdateFiles() {
