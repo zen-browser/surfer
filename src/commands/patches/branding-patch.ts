@@ -422,7 +422,7 @@ pref("devtools.selfxss.count", 5);
 }
 
 function setUpdateURLs() {
-  let suffix;
+  let suffix = '';
   if ((process as any).surferPlatform == 'win32') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
