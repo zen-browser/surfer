@@ -10,9 +10,9 @@ import { ENGINE_DIR } from '../constants'
 export const discard = async (file: string): Promise<void> => {
   const realFile = resolve(ENGINE_DIR, file)
 
-  log.info(`Discarding ${file}...`)
+  log.info(`Discarding ${realFile}...`)
 
-  if (!existsSync(realFile)) throw new Error(`File ${file} does not exist`)
+  if (!existsSync(realFile)) throw new Error(`File ${realFile} does not exist`)
   if (!statSync(realFile).isFile()) throw new Error('Target must be a file.')
 
   try {
