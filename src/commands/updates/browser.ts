@@ -62,7 +62,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   }
   if ((process as any).surferPlatform == 'darwin') {
     if (compatMode == 'x86_64') {
-      releaseMarName = 'macos-x64.mar'
+      releaseMarName = 'macos-x86_64.mar'
     }
     else if (compatMode == 'aarch64') {
       releaseMarName = 'macos-aarch64.mar'
