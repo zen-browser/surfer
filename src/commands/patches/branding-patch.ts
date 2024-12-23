@@ -423,17 +423,7 @@ pref("devtools.selfxss.count", 5);
 
 function setUpdateURLs() {
   let suffix = '';
-  if ((process as any).surferPlatform == 'win32') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
   if ((process as any).surferPlatform == 'darwin') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
-  if ((process as any).surferPlatform == 'linux') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
     }

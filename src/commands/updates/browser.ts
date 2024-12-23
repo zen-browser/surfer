@@ -51,9 +51,6 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   let releaseMarName;
   if ((process as any).surferPlatform == 'win32') {
     if (compatMode == 'x86_64') {
-      releaseMarName = 'windows-generic.mar'
-    }
-    else if (compatMode == 'x86_64-v3') {
       releaseMarName = 'windows.mar'
     }
     else if (compatMode == 'aarch64') {
@@ -70,9 +67,6 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   }
   if ((process as any).surferPlatform == 'linux') {
     if (compatMode == 'x86_64') {
-      releaseMarName = 'linux-generic.mar'
-    }
-    else if (compatMode == 'x86_64-v3') {
       releaseMarName = 'linux.mar'
     }
     else if (compatMode == 'aarch64') {
@@ -121,16 +115,6 @@ async function writeUpdateFileToDisk(
   }
 ) {
   let suffix = '';
-  if ((process as any).surferPlatform == 'win32') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
-  if ((process as any).surferPlatform == 'linux') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
   if ((process as any).surferPlatform == 'darwin') {
     if (compatMode == 'x86_64') {
       suffix = '-generic';
