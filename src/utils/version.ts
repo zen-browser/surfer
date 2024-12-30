@@ -4,6 +4,8 @@
 import axios from 'axios'
 import { log } from '../log'
 import { SupportedProducts } from './config'
+import { config } from '..'
+import { dynamicConfig } from '.'
 
 const firefoxTargets = JSON.parse(`{
   "${SupportedProducts.Firefox}": "LATEST_FIREFOX_VERSION",
@@ -12,6 +14,11 @@ const firefoxTargets = JSON.parse(`{
   "${SupportedProducts.FirefoxESR}": "FIREFOX_ESR",
   "${SupportedProducts.FirefoxNightly}": "FIREFOX_NIGHTLY"
 }`)
+
+export const shouldUseCandidate = (): boolean => {
+  const brandingKey = dynamicConfig.get('brand')
+  return brandingKey !== 'stable' && (config.version.version !== config.version.candidate);
+}
 
 export const getLatestFF = async (
   product: SupportedProducts = SupportedProducts.Firefox

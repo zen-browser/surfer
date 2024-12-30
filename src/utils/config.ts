@@ -131,6 +131,10 @@ export interface Config {
      * The version of the selected product you are forking
      */
     version?: string
+    /*
+     * Release candidate version
+     */
+    candidate?: string
   }
   buildOptions: {
     windowsUseSymbolicLinks: boolean

@@ -20,7 +20,7 @@ import {
   resolveAddonDownloadUrl,
   unpackAddon,
 } from './addon'
-import { configPath } from '../../utils'
+import { configPath, shouldUseCandidate } from '../../utils'
 import fs from 'fs-extra'
 
 export function shouldSetupFirefoxSource() {
@@ -30,8 +30,8 @@ export function shouldSetupFirefoxSource() {
   )
 }
 
-export async function setupFirefoxSource(version: string) {
-  const firefoxSourceTar = await downloadFirefoxSource(version)
+export async function setupFirefoxSource(version: string, isCandidate = false) {
+  const firefoxSourceTar = await downloadFirefoxSource(version, isCandidate)
 
   await unpackFirefoxSource(firefoxSourceTar)
 
@@ -108,8 +108,12 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacked Firefox source to ${ENGINE_DIR}`)
 }
 
-async function downloadFirefoxSource(version: string) {
-  const base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
+async function downloadFirefoxSource(version: string, isCandidate = false) {
+  let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`;
+  if (isCandidate) {
+    console.log('Using candidate build')
+    base = `https://archive.mozilla.org/pub/firefox/candidates/${version}-candidates/build1/source/`;
+  }
   const filename = `firefox-${version}.source.tar.xz`
 
   const url = base + filename
@@ -141,9 +145,11 @@ async function downloadFirefoxSource(version: string) {
 export async function downloadInternals({
   version,
   force,
+  isCandidate = shouldUseCandidate()
 }: {
   version: string
-  force?: boolean
+  force?: boolean,
+  isCandidate?: boolean
 }) {
   // Provide a legible error if there is no version specified
   if (!version) {
@@ -151,6 +157,10 @@ export async function downloadInternals({
       'You have not specified a version of firefox in your config file. This is required to build a firefox fork.'
     )
     process.exit(1)
+  }
+
+  if (isCandidate) {
+    version = config.version.candidate as string;
   }
 
   if (force && existsSync(ENGINE_DIR)) {
@@ -168,7 +178,7 @@ export async function downloadInternals({
   }
 
   if (!existsSync(ENGINE_DIR)) {
-    await setupFirefoxSource(version)
+    await setupFirefoxSource(version, isCandidate)
   }
 
   for (const addon of getAddons()) {

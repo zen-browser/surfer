@@ -297,15 +297,15 @@ function configureBrandingNsis(
 !define HelpLink              "https://github.com/zen-browser/desktop/issues"
 
 ; The OFFICIAL define is a workaround to support different urls for Release and
-; Beta since they share the same branding when building with other branches that
-; set the update channel to beta.
+; Stable since they share the same branding when building with other branches that
+; set the update channel to stable.
 !define OFFICIAL
 !define URLStubDownloadX86 "https://download.mozilla.org/?os=win&lang=\${AB_CD}&product=firefox-latest"
 !define URLStubDownloadAMD64 "https://download.mozilla.org/?os=win64&lang=\${AB_CD}&product=firefox-latest"
 !define URLStubDownloadAArch64 "https://download.mozilla.org/?os=win64-aarch64&lang=\${AB_CD}&product=firefox-latest"
 !define URLManualDownload "https://zen-browser.app/download"
 !define URLSystemRequirements "https://www.mozilla.org/firefox/system-requirements/"
-!define Channel "release"
+!define Channel "stable"
 
 # The installer's certificate name and issuer expected by the stub installer
 !define CertNameDownload   "${brandingConfig.brandFullName}"
