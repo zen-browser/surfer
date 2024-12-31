@@ -192,6 +192,10 @@ export async function downloadInternals({
 
   await addAddonsToMozBuild(getAddons())
 
-  config.version.version = version
+  if (!isCandidate) {
+    config.version.version = version
+  } else {
+    config.version.candidate = version
+  }
   writeFileSync(configPath, JSON.stringify(config, undefined, 2))
 }
