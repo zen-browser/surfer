@@ -10,6 +10,7 @@ import {
   dynamicConfig,
   ensureEmpty,
   generateHash,
+  getFFVersionOrCandidate,
   getSize,
   ReleaseInfo,
 } from '../../utils'
@@ -186,7 +187,7 @@ export async function generateBrowserUpdateFiles() {
         '@type': 'minor',
         '@displayVersion': version,
         '@appVersion': version,
-        '@platformVersion': config.version.version,
+        '@platformVersion': getFFVersionOrCandidate(),
         '@buildID': platform.Build.BuildID,
 
         patch: {

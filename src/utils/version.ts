@@ -20,6 +20,10 @@ export const shouldUseCandidate = (): boolean => {
   return brandingKey !== 'stable' && (config.version.version !== config.version.candidate);
 }
 
+export const getFFVersionOrCandidate = () => {
+  return shouldUseCandidate() ? config.version.candidate : config.version.version
+}
+
 export const getLatestFF = async (
   product: SupportedProducts = SupportedProducts.Firefox
 ): Promise<string> => {

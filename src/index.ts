@@ -16,7 +16,7 @@ import commander, { Command } from 'commander'
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-import { errorHandler, config as configInited, versionFormatter } from './utils'
+import { errorHandler, config as configInited, versionFormatter, getFFVersionOrCandidate } from './utils'
 import { commands } from './cmds'
 import { BIN_NAME, ENGINE_DIR } from './constants'
 import { updateCheck } from './middleware/update-check'
@@ -41,7 +41,7 @@ if (existsSync(resolve(ENGINE_DIR, 'browser', 'config', 'version.txt'))) {
     .toString()
     .replace(/\n/g, '')
 
-  if (version !== config.version.version) reportedFFVersion = version
+  if (version !== getFFVersionOrCandidate()) reportedFFVersion = version
 }
 
 export const bin_name = BIN_NAME

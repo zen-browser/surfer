@@ -1,4 +1,5 @@
 import { config } from '..'
+import { getFFVersionOrCandidate } from '../utils'
 
 const otherBuildModes = `# You can change to other build modes by running:
 #   $ surfer set buildMode [dev|debug|release]`
@@ -48,7 +49,7 @@ ac_add_options --with-branding=browser/branding/${brand}
 ac_add_options --enable-unverified-updates
 ac_add_options --enable-update-channel=${brand}
 
-export ZEN_FIREFOX_VERSION=${config.version.version}
+export ZEN_FIREFOX_VERSION=${getFFVersionOrCandidate()}
 export MOZ_APPUPDATE_HOST=${
     config.updateHostname || 'localhost:7648 # This should not resolve'
   }

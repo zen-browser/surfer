@@ -20,7 +20,7 @@ import {
   resolveAddonDownloadUrl,
   unpackAddon,
 } from './addon'
-import { configPath, shouldUseCandidate } from '../../utils'
+import { configPath, getFFVersionOrCandidate, shouldUseCandidate } from '../../utils'
 import fs from 'fs-extra'
 
 export function shouldSetupFirefoxSource() {
@@ -81,7 +81,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     ])
     const archiveDir = resolve(
       MELON_TMP_DIR,
-      'firefox-' + config.version.version
+      'firefox-' + getFFVersionOrCandidate()
     )
     if (existsSync(ENGINE_DIR)) {
       // remove the existing engine directory
