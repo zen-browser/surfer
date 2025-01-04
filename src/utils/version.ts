@@ -17,7 +17,7 @@ const firefoxTargets = JSON.parse(`{
 
 export const shouldUseCandidate = (): boolean => {
   const brandingKey = dynamicConfig.get('brand')
-  return brandingKey !== 'stable' && (config.version.version !== config.version.candidate);
+  return brandingKey !== 'release' && (config.version.version !== config.version.candidate);
 }
 
 export const getFFVersionOrCandidate = () => {
