@@ -17,7 +17,7 @@ export const update = async (): Promise<void> => {
 
   // We are using force here to delete the engine directory if it already
   // exists to make way for the new version.
-  await downloadInternals({ version, force: true })
+  await downloadInternals({ version, force: true, isCandidate: false })
 
   log.success(
     `Firefox has successfully been updated to ${version}.`,
