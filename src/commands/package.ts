@@ -116,12 +116,15 @@ export const surferPackage = async () => {
           true
         )
         // move zen.provisionprofile to Contents/embedded.provisionprofile
+        const provisionProfilePath = 'zen.provisionprofile';
+        const embeddedProvisionProfilePath = join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile');
+        console.log(`Moving ${provisionProfilePath} to ${embeddedProvisionProfilePath}`)
         await dispatch(
           'mv',
           [
             '-r',
-            'zen.provisionprofile',
-            join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile'),
+            provisionProfilePath,
+            join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile')
           ],
           ENGINE_DIR,
           true
