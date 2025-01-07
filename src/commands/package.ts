@@ -122,7 +122,6 @@ export const surferPackage = async () => {
         await dispatch(
           'mv',
           [
-            '-r',
             provisionProfilePath,
             join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile')
           ],
