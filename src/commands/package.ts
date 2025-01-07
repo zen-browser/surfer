@@ -108,13 +108,25 @@ export const surferPackage = async () => {
 
       log.info('Signing the app')
       if (process.env.MACOS_APPLE_DEVELOPER_ID) {
-        log.info('Signing the app with the developer id')
+        log.info('Preparing the app for signing')
         await dispatch(
           'chmod',
           ['+x', '../build/codesign/codesign.bash'],
           ENGINE_DIR,
           true
         )
+        // move zen.provisionprofile to Contents/embedded.provisionprofile
+        await dispatch(
+          'mv',
+          [
+            '-r',
+            'zen.provisionprofile',
+            join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile'),
+          ],
+          ENGINE_DIR,
+          true
+        );
+        console.log('Signing the app with the developer id')
         await dispatch(
           '../build/codesign/codesign.bash',
           [
