@@ -115,19 +115,6 @@ export const surferPackage = async () => {
           ENGINE_DIR,
           true
         )
-        // move zen.provisionprofile to Contents/embedded.provisionprofile
-        const provisionProfilePath = 'zen.provisionprofile';
-        const embeddedProvisionProfilePath = join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile');
-        console.log(`Moving ${provisionProfilePath} to ${embeddedProvisionProfilePath}`)
-        await dispatch(
-          'mv',
-          [
-            provisionProfilePath,
-            join(zenMacDestDir, `${getCurrentBrandName()}.app`, 'Contents', 'embedded.provisionprofile')
-          ],
-          ENGINE_DIR,
-          true
-        );
         console.log('Signing the app with the developer id')
         await dispatch(
           '../build/codesign/codesign.bash',
