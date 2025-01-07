@@ -122,8 +122,6 @@ export const surferPackage = async () => {
             join(zenMacDestDir, `${getCurrentBrandName()}.app`),
             '-i',
             process.env.MACOS_APPLE_DEVELOPER_ID,
-            '-f',
-            'zen.provisionprofile',
             '-b',
             '../build/codesign/browser.developer.entitlements.xml',
             '-p',
