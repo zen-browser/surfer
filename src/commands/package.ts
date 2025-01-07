@@ -123,6 +123,8 @@ export const surferPackage = async () => {
             '-i',
             process.env.MACOS_APPLE_DEVELOPER_ID,
             '-b',
+            '-f',
+            'zen.provisionprofile',
             '../build/codesign/browser.developer.entitlements.xml',
             '-p',
             '../build/codesign/plugin-container.developer.entitlements.xml',
