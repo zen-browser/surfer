@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { config, configDispatch } from '../utils'
+import { config, configDispatch, dynamicConfig } from '../utils'
 
 export const init = async (directory: Command | string): Promise<void> => {
   const cwd = process.cwd()
@@ -35,6 +35,12 @@ export const init = async (directory: Command | string): Promise<void> => {
     )
 
   version = version.trim().replace(/\\n/g, '')
+
+  const brandingKey = dynamicConfig.get('brand')
+  if (brandingKey !== 'unofficial') {
+    log.warning("NOT initializing git, as this is an official build");
+    return;
+  }
 
   // TODO: Use bash on windows, this may significantly improve performance.
   // Still needs testing though
