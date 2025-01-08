@@ -132,13 +132,6 @@ export const surferPackage = async () => {
           true
         )
       }
-      log.info('Stapling the app')
-      await dispatch(
-        'xcrun',
-        ['stapler', 'staple', join(zenMacDestDir, `${getCurrentBrandName()}.app`)],
-        ENGINE_DIR,
-        true
-      )
       log.info('Repacking the app')
       const brandingPath = join(ENGINE_DIR, 'browser', 'branding', brandingKey)
       await remove(dmgPath)
