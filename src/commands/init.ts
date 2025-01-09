@@ -36,12 +36,6 @@ export const init = async (directory: Command | string): Promise<void> => {
 
   version = version.trim().replace(/\\n/g, '')
 
-  const brandingKey = dynamicConfig.get('brand')
-  if (brandingKey !== 'unofficial') {
-    log.warning("NOT initializing git, as this is an official build");
-    return;
-  }
-
   // TODO: Use bash on windows, this may significantly improve performance.
   // Still needs testing though
   log.info('Initializing git, this may take some time')
