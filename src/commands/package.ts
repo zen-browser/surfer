@@ -142,7 +142,7 @@ export const surferPackage = async () => {
           '-m',
           'mozbuild.action.make_dmg',
           '--volume-name',
-          'Zen Browser',
+          getCurrentBrandName(),
           '--icon',
           join(brandingPath, 'firefox.icns'),
           '--background',
