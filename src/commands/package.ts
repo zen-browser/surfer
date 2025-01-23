@@ -55,7 +55,6 @@ export const surferPackage = async () => {
   )
 
   const currentCWD = process.cwd()
-  const zenMacDestDir = join(currentCWD, 'zen-browser')
 
   if (!process.env.SURFER_SIGNING_MODE) {
     await dispatch(machPath, arguments_, ENGINE_DIR, true)
@@ -155,8 +154,7 @@ export const surferPackage = async () => {
   const marPath = await createMarFile(
     version,
     channel,
-    brandingDetails.release.github,
-    zenMacDestDir
+    brandingDetails.release.github
   )
   dynamicConfig.set('marPath', marPath)
 
@@ -181,8 +179,7 @@ function getCurrentBrandName(): string {
 async function createMarFile(
   version: string,
   channel: string,
-  github?: { repo: string },
-  zenMacDestDir?: string
+  github?: { repo: string }
 ): Promise<string> {
   log.info(`Creating mar file...`)
   let marBinary: string = windowsPathToUnix(
@@ -197,8 +194,8 @@ async function createMarFile(
   // <obj dir>/dist/${binaryName}/${brandFullName}.app and on everything else,
   // the contents of the folder <obj dir>/dist/${binaryName}
   const binary =
-    (process as any).surferPlatform == 'darwin' && zenMacDestDir
-      ? join(zenMacDestDir, `${getCurrentBrandName()}.app`)
+    (process as any).surferPlatform == 'darwin'
+      ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
       : join(OBJ_DIR, 'dist', config.binaryName)
 
   const marPath = resolve(DIST_DIR, 'output.mar')
