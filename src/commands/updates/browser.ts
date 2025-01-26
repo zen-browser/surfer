@@ -59,12 +59,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
     }
   }
   if ((process as any).surferPlatform == 'darwin') {
-    if (compatMode == 'x86_64') {
-      releaseMarName = 'macos-x86_64.mar'
-    }
-    else if (compatMode == 'aarch64') {
-      releaseMarName = 'macos-aarch64.mar'
-    }
+    releaseMarName = 'macos.mar' // universal binary
   }
   if ((process as any).surferPlatform == 'linux') {
     if (compatMode == 'x86_64') {
@@ -115,18 +110,12 @@ async function writeUpdateFileToDisk(
     }
   }
 ) {
-  let suffix = '';
-  if ((process as any).surferPlatform == 'darwin') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
   const xmlPath = join(
     DIST_DIR,
     'update',
     'browser',
     target,
-    channel + suffix,
+    channel,
     'update.xml'
   )
   const document = create(updateObject)

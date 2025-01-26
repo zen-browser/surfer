@@ -422,13 +422,7 @@ pref("devtools.selfxss.count", 5);
 }
 
 function setUpdateURLs() {
-  let suffix = '';
-  if ((process as any).surferPlatform == 'darwin') {
-    if (compatMode == 'x86_64') {
-      suffix = '-generic';
-    }
-  }
-  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%${suffix}/update.xml`
+  const baseURL = `URL=https://@MOZ_APPUPDATE_HOST@/updates/browser/%BUILD_TARGET%/%CHANNEL%/update.xml`
   const appIni = join(ENGINE_DIR, 'build', 'application.ini.in')
   const appIniContents = readFileSync(appIni).toString()
   const updatedAppIni = appIniContents.replace(/URL=.*update.xml/g, baseURL)

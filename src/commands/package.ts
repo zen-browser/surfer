@@ -36,118 +36,107 @@ export const surferPackage = async () => {
 
   // The engine directory must have been downloaded for this to be valid
   // TODO: Make this a reusable function that can be used by everything
-  if (!existsSync(ENGINE_DIR)) {
-    log.error(
-      `Unable to locate any source directories.\nRun |${bin_name} download| to generate the source directory.`
-    )
-  }
-
-  if (!existsSync(machPath)) {
-    log.error(`Cannot locate the 'mach' binary within ${ENGINE_DIR}`)
-  }
-
-  const arguments_ = ['package']
-
-  log.info(
-    `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
-      arguments_.slice(1, 0)
-    )}...`
-  )
-
-  const currentCWD = process.cwd()
-
-  if (!process.env.SURFER_SIGNING_MODE) {
-    await dispatch(machPath, arguments_, ENGINE_DIR, true)
-
-    // Merge language packs
-    for (const locale of await getLocales()) {
-      const arguments_ = ['build', `merge-${locale}`]
-
-      log.info(
-        `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
-          arguments_.slice(1, 0)
-        )}...`
-      )
-
-      await dispatch(machPath, arguments_, ENGINE_DIR, true)
-    }
-
-    log.info('Copying language packs')
-
-    await dispatch(
-      machPath,
-      ['package-multi-locale', '--locales', ...(await getLocales())],
-      ENGINE_DIR,
-      true
-    )
-  }
-
-  log.info('Copying results up')
-
-  log.debug("Creating the dist directory if it doesn't exist")
-  if (!existsSync(DIST_DIR)) await mkdir(DIST_DIR, { recursive: true })
-
-  log.debug('Indexing files to copy')
-  const filesInMozillaDistrobution = await readdir(join(OBJ_DIR, 'dist'), {
-    withFileTypes: true,
-  })
-  const files = filesInMozillaDistrobution
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-
-  for (const file of files) {
-    const destinationFile = join(DIST_DIR, file)
-    log.debug(`Copying ${file}`)
-    if (existsSync(destinationFile)) await unlink(destinationFile)
-    await copyFile(join(OBJ_DIR, 'dist', file), destinationFile)
-  }
-
-  // Windows has some special dist files that are available within the dist
-  // directory.
-  if ((process as any).surferPlatform == 'win32') {
-    const installerDistributionDirectory = join(
-      OBJ_DIR,
-      'dist',
-      'install',
-      'sea'
-    )
-
-    if (!existsSync(installerDistributionDirectory)) {
+  if (!process.env.JUST_MAR) {
+    if (!existsSync(ENGINE_DIR)) {
       log.error(
-        `Could not find windows installer files located at '${installerDistributionDirectory}'`
+        `Unable to locate any source directories.\nRun |${bin_name} download| to generate the source directory.`
       )
     }
 
-    const installerDistributionDirectoryContents = await readdir(
-      installerDistributionDirectory,
-      { withFileTypes: true }
+    if (!existsSync(machPath)) {
+      log.error(`Cannot locate the 'mach' binary within ${ENGINE_DIR}`)
+    }
+
+    const arguments_ = ['package']
+
+    log.info(
+      `Packaging \`${config.binaryName}\` with args ${JSON.stringify(
+        arguments_.slice(1, 0)
+      )}...`
     )
-    const windowsInstallerFiles = installerDistributionDirectoryContents
+
+    const currentCWD = process.cwd()
+
+    if (!process.env.SURFER_SIGNING_MODE) {
+      await dispatch(machPath, arguments_, ENGINE_DIR, true)
+
+      log.info('Copying language packs')
+
+      await dispatch(
+        machPath,
+        ['package-multi-locale', '--locales', ...(await getLocales())],
+        ENGINE_DIR,
+        true
+      )
+    }
+
+    log.info('Copying results up')
+
+    log.debug("Creating the dist directory if it doesn't exist")
+    if (!existsSync(DIST_DIR)) await mkdir(DIST_DIR, { recursive: true })
+
+    log.debug('Indexing files to copy')
+    const filesInMozillaDistrobution = await readdir(join(OBJ_DIR, 'dist'), {
+      withFileTypes: true,
+    })
+    const files = filesInMozillaDistrobution
       .filter((entry) => entry.isFile())
       .map((entry) => entry.name)
 
-    for (const file of windowsInstallerFiles) {
-      let newFileName = file
+    for (const file of files) {
+      const destinationFile = join(DIST_DIR, file)
+      log.debug(`Copying ${file}`)
+      if (existsSync(destinationFile)) await unlink(destinationFile)
+      await copyFile(join(OBJ_DIR, 'dist', file), destinationFile)
+    }
 
-      // There are some special cases that I want to reformat the name for
-      if (file.includes('.installer.exe')) {
-        newFileName = `${config.binaryName}.installer.exe`
-      }
-      if (file.includes('.installer-stub.exe')) {
-        newFileName = `${config.binaryName}.installer.pretty.exe`
-        log.warning(
-          `The installer ${newFileName} requires that your binaries are available from the internet and everything is correctly configured. I recommend you ship '${config.binaryName}.installer.exe' if you have not set this up correctly yet`
+    // Windows has some special dist files that are available within the dist
+    // directory.
+    if ((process as any).surferPlatform == 'win32') {
+      const installerDistributionDirectory = join(
+        OBJ_DIR,
+        'dist',
+        'install',
+        'sea'
+      )
+
+      if (!existsSync(installerDistributionDirectory)) {
+        log.error(
+          `Could not find windows installer files located at '${installerDistributionDirectory}'`
         )
       }
 
-      // Actually copy
-      const destinationFile = join(DIST_DIR, newFileName)
-      log.debug(`Copying ${file}`)
-      if (existsSync(destinationFile)) await unlink(destinationFile)
-      await copyFile(
-        join(installerDistributionDirectory, file),
-        destinationFile
+      const installerDistributionDirectoryContents = await readdir(
+        installerDistributionDirectory,
+        { withFileTypes: true }
       )
+      const windowsInstallerFiles = installerDistributionDirectoryContents
+        .filter((entry) => entry.isFile())
+        .map((entry) => entry.name)
+
+      for (const file of windowsInstallerFiles) {
+        let newFileName = file
+
+        // There are some special cases that I want to reformat the name for
+        if (file.includes('.installer.exe')) {
+          newFileName = `${config.binaryName}.installer.exe`
+        }
+        if (file.includes('.installer-stub.exe')) {
+          newFileName = `${config.binaryName}.installer.pretty.exe`
+          log.warning(
+            `The installer ${newFileName} requires that your binaries are available from the internet and everything is correctly configured. I recommend you ship '${config.binaryName}.installer.exe' if you have not set this up correctly yet`
+          )
+        }
+
+        // Actually copy
+        const destinationFile = join(DIST_DIR, newFileName)
+        log.debug(`Copying ${file}`)
+        if (existsSync(destinationFile)) await unlink(destinationFile)
+        await copyFile(
+          join(installerDistributionDirectory, file),
+          destinationFile
+        )
+      }
     }
   }
 
