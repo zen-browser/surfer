@@ -170,6 +170,10 @@ export const build = async (options: Options): Promise<void> => {
     if (!options.skipPatchCheck) await patchCheck()
 
     await applyConfig(prettyHost)
+    if (process.env.SURFER_MOZCONFIG_ONLY) {
+      log.info('Mozconfig applied. Exiting...')
+      process.exit(0)
+    }
 
     log.info('Starting build...')
 
