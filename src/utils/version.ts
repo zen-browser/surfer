@@ -17,11 +17,16 @@ const firefoxTargets = JSON.parse(`{
 
 export const shouldUseCandidate = (): boolean => {
   const brandingKey = dynamicConfig.get('brand')
-  return brandingKey !== 'release' && (config.version.version !== config.version.candidate);
+  return (
+    brandingKey !== 'release' &&
+    config.version.version !== config.version.candidate
+  )
 }
 
 export const getFFVersionOrCandidate = () => {
-  return shouldUseCandidate() ? config.version.candidate : config.version.version
+  return shouldUseCandidate()
+    ? config.version.candidate
+    : config.version.version
 }
 
 export const getLatestFF = async (

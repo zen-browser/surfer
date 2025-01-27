@@ -35,7 +35,7 @@ const ausPlatformsMap = {
   ],
   macosArm: ['Darwin_aarch64-gcc3'],
   win64: ['WINNT_x86_64-msvc', 'WINNT_x86_64-msvc-x64'],
-  winArm: ['WINNT_aarch64-msvc-aarch64']
+  winArm: ['WINNT_aarch64-msvc-aarch64'],
 }
 
 export async function getPlatformConfig() {
@@ -48,13 +48,11 @@ export async function getPlatformConfig() {
 }
 
 function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
-
-  let releaseMarName;
+  let releaseMarName
   if ((process as any).surferPlatform == 'win32') {
     if (compatMode == 'x86_64') {
       releaseMarName = 'windows.mar'
-    }
-    else if (compatMode == 'aarch64') {
+    } else if (compatMode == 'aarch64') {
       releaseMarName = 'windows-arm64.mar'
     }
   }
@@ -64,8 +62,7 @@ function getReleaseMarName(releaseInfo: ReleaseInfo): string | undefined {
   if ((process as any).surferPlatform == 'linux') {
     if (compatMode == 'x86_64') {
       releaseMarName = 'linux.mar'
-    }
-    else if (compatMode == 'aarch64') {
+    } else if (compatMode == 'aarch64') {
       releaseMarName = 'linux-aarch64.mar'
     }
   }
@@ -126,18 +123,24 @@ async function writeUpdateFileToDisk(
 
 function getTargets(): string[] {
   if ((process as any).surferPlatform == 'win32') {
-    return compatMode == 'aarch64' ? ausPlatformsMap.winArm : ausPlatformsMap.win64;
+    return compatMode == 'aarch64'
+      ? ausPlatformsMap.winArm
+      : ausPlatformsMap.win64
   }
 
   if ((process as any).surferPlatform == 'linux') {
-    return compatMode == 'aarch64' ?  ausPlatformsMap.linuxArm : ausPlatformsMap.linux64;
+    return compatMode == 'aarch64'
+      ? ausPlatformsMap.linuxArm
+      : ausPlatformsMap.linux64
   }
 
   if ((process as any).surferPlatform == 'darwin') {
-    return compatMode == 'aarch64' ? ausPlatformsMap.macosArm : ausPlatformsMap.macosIntel;
+    return compatMode == 'aarch64'
+      ? ausPlatformsMap.macosArm
+      : ausPlatformsMap.macosIntel
   }
   log.error('Unknown platform')
-  return [];
+  return []
 }
 
 export async function generateBrowserUpdateFiles() {

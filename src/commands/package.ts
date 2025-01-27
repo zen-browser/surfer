@@ -184,7 +184,14 @@ async function createMarFile(
   // the contents of the folder <obj dir>/dist/${binaryName}
   const binary =
     (process as any).surferPlatform == 'darwin'
-      ? join(OBJ_DIR, 'dist', config.binaryName, `${getCurrentBrandName()}.app`)
+      ? process.env.JUST_MAR
+        ? join(OBJ_DIR, 'dist', `${getCurrentBrandName()}.app`)
+        : join(
+            OBJ_DIR,
+            'dist',
+            config.binaryName,
+            `${getCurrentBrandName()}.app`
+          )
       : join(OBJ_DIR, 'dist', config.binaryName)
 
   const marPath = resolve(DIST_DIR, 'output.mar')

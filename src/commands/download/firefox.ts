@@ -20,7 +20,11 @@ import {
   resolveAddonDownloadUrl,
   unpackAddon,
 } from './addon'
-import { configPath, getFFVersionOrCandidate, shouldUseCandidate } from '../../utils'
+import {
+  configPath,
+  getFFVersionOrCandidate,
+  shouldUseCandidate,
+} from '../../utils'
 import fs from 'fs-extra'
 
 export function shouldSetupFirefoxSource() {
@@ -109,10 +113,10 @@ async function unpackFirefoxSource(name: string): Promise<void> {
 }
 
 async function downloadFirefoxSource(version: string, isCandidate = false) {
-  let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`;
+  let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
   if (isCandidate) {
     console.log('Using candidate build')
-    base = `https://archive.mozilla.org/pub/firefox/candidates/${version}-candidates/build1/source/`;
+    base = `https://archive.mozilla.org/pub/firefox/candidates/${version}-candidates/build1/source/`
   }
   const filename = `firefox-${version}.source.tar.xz`
 
@@ -145,10 +149,10 @@ async function downloadFirefoxSource(version: string, isCandidate = false) {
 export async function downloadInternals({
   version,
   force,
-  isCandidate = shouldUseCandidate()
+  isCandidate = shouldUseCandidate(),
 }: {
   version: string
-  force?: boolean,
+  force?: boolean
   isCandidate?: boolean
 }) {
   // Provide a legible error if there is no version specified
@@ -160,7 +164,7 @@ export async function downloadInternals({
   }
 
   if (isCandidate) {
-    version = config.version.candidate as string;
+    version = config.version.candidate as string
   }
 
   if (force && existsSync(ENGINE_DIR)) {
