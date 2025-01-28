@@ -34,6 +34,9 @@ export const surferPackage = async () => {
   const version = brandingDetails.release.displayVersion
   const channel = brandingKey || 'unofficial'
 
+  log.debug("Creating the dist directory if it doesn't exist")
+  if (!existsSync(DIST_DIR)) await mkdir(DIST_DIR, { recursive: true })
+
   // The engine directory must have been downloaded for this to be valid
   // TODO: Make this a reusable function that can be used by everything
   if (!process.env.JUST_MAR) {
@@ -71,9 +74,6 @@ export const surferPackage = async () => {
     }
 
     log.info('Copying results up')
-
-    log.debug("Creating the dist directory if it doesn't exist")
-    if (!existsSync(DIST_DIR)) await mkdir(DIST_DIR, { recursive: true })
 
     log.debug('Indexing files to copy')
     const filesInMozillaDistrobution = await readdir(join(OBJ_DIR, 'dist'), {
