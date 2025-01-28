@@ -135,9 +135,7 @@ function getTargets(): string[] {
   }
 
   if ((process as any).surferPlatform == 'darwin') {
-    return compatMode == 'aarch64'
-      ? ausPlatformsMap.macosArm
-      : ausPlatformsMap.macosIntel
+    return [...ausPlatformsMap.macosArm, ...ausPlatformsMap.macosIntel]
   }
   log.error('Unknown platform')
   return []
