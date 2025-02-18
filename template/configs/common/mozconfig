@@ -3,7 +3,6 @@ export MOZ_USER_DIR="${name}"
 export MOZ_APP_VENDOR="${vendor}"
 export MOZ_APP_BASENAME=${binName}
 export MOZ_APP_PROFILE=${binName}
-export MOZ_APP_DISPLAYNAME="${name}"
 export MOZ_MACBUNDLE_ID=${appId}
 export MOZ_DISTRIBUTION_ID=${appId}
 

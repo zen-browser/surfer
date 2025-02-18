@@ -162,7 +162,7 @@ function getCurrentBrandName(): string {
     return 'Nightly'
   }
 
-  return config.brands[brand].brandFullName
+  return config.brands[brand].brandShortName
 }
 
 async function createMarFile(
