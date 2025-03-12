@@ -20,6 +20,7 @@ export const PATCH_ARGS = [
 export const ENGINE_DIR = resolve(process.cwd(), 'engine')
 export const SRC_DIR = resolve(process.cwd(), 'src')
 export const TESTS_DIR = resolve(process.cwd(), 'tests')
+export const CURRENT_DIR = process.cwd()
 // eslint-disable-next-line unicorn/prefer-module
 export const PATCHES_DIR = resolve(
   __dirname,

@@ -10,7 +10,7 @@ import glob from 'tiny-glob'
 
 import { appendToFileSync, mkdirp } from '../../utils'
 import { config } from '../..'
-import { ENGINE_DIR, SRC_DIR, TESTS_DIR } from '../../constants'
+import { CURRENT_DIR, ENGINE_DIR, SRC_DIR, TESTS_DIR } from '../../constants'
 import { IMelonPatch } from './command'
 
 // =============================================================================
@@ -26,7 +26,7 @@ export const copyManual = async (
   if (patchName === 'tests') {
     dest = resolve(dest, 'browser', 'base', 'zen-components')
   }
-  const placeToCheck = patchName === 'tests' ? process.cwd() : SRC_DIR
+  const placeToCheck = patchName === 'tests' ? CURRENT_DIR : SRC_DIR
   // If the file exists and is not a symlink, we want to replace it with a
   // symlink to our file, so remove it
   if (
