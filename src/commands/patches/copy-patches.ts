@@ -10,7 +10,7 @@ import glob from 'tiny-glob'
 
 import { appendToFileSync, mkdirp } from '../../utils'
 import { config } from '../..'
-import { ENGINE_DIR, SRC_DIR } from '../../constants'
+import { ENGINE_DIR, SRC_DIR, TESTS_DIR } from '../../constants'
 import { IMelonPatch } from './command'
 
 // =============================================================================
@@ -18,14 +18,22 @@ import { IMelonPatch } from './command'
 
 const getChunked = (location: string) => location.replace(/\\/g, '/').split('/')
 
-export const copyManual = async (name: string): Promise<void> => {
+export const copyManual = async (
+  name: string,
+  patchName: string
+): Promise<void> => {
+  let dest = ENGINE_DIR
+  if (patchName === 'tests') {
+    dest = resolve(dest, 'browser', 'base', 'zen-components')
+  }
+  const placeToCheck = patchName === 'tests' ? process.cwd() : SRC_DIR
   // If the file exists and is not a symlink, we want to replace it with a
   // symlink to our file, so remove it
   if (
-    existsSync(resolve(ENGINE_DIR, ...getChunked(name))) &&
-    !lstatSync(resolve(ENGINE_DIR, ...getChunked(name))).isSymbolicLink()
+    existsSync(resolve(dest, ...getChunked(name))) &&
+    !lstatSync(resolve(dest, ...getChunked(name))).isSymbolicLink()
   ) {
-    await remove(resolve(ENGINE_DIR, ...getChunked(name)))
+    await remove(resolve(dest, ...getChunked(name)))
   }
 
   if (
@@ -33,19 +41,19 @@ export const copyManual = async (name: string): Promise<void> => {
     !config.buildOptions.windowsUseSymbolicLinks
   ) {
     // Make the directory if it doesn't already exist.
-    await mkdirp(dirname(resolve(ENGINE_DIR, ...getChunked(name))))
+    await mkdirp(dirname(resolve(dest, ...getChunked(name))))
 
     // By default, windows users do not have access to the permissions to create
     // symbolic links. As a work around, we will just copy the files instead
     await copyFile(
-      resolve(SRC_DIR, ...getChunked(name)),
-      resolve(ENGINE_DIR, ...getChunked(name))
+      resolve(placeToCheck, ...getChunked(name)),
+      resolve(dest, ...getChunked(name))
     )
   } else {
     // Create the symlink
     await ensureSymlink(
-      resolve(SRC_DIR, ...getChunked(name)),
-      resolve(ENGINE_DIR, ...getChunked(name))
+      resolve(placeToCheck, ...getChunked(name)),
+      resolve(dest, ...getChunked(name))
     )
   }
 
@@ -91,11 +99,31 @@ export async function get(): Promise<ICopyPatch[]> {
     }
   })
 
+  const testFiles = await glob('./tests/**/*', {
+    filesOnly: true,
+    cwd: '.',
+  })
+
+  const testFilesGrouped = testFiles.filter(
+    (f) => !(f.endsWith('.patch') || f.split('/').includes('node_modules'))
+  )
+
+  testFilesGrouped.map((index) => {
+    const group = index.split('/')[0]
+
+    if (!manualPatches.some((m) => m.name == group)) {
+      manualPatches.push({
+        name: group,
+        src: testFilesGrouped.filter((f) => f.split('/')[0] == group),
+      })
+    }
+  })
+
   return manualPatches
 }
 
-export async function apply(source: string[]): Promise<void> {
-  for (const item of source) {
-    await copyManual(item)
+export async function apply({ src, name }: ICopyPatch): Promise<void> {
+  for (const item of src) {
+    await copyManual(item, name)
   }
 }

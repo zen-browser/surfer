@@ -74,7 +74,7 @@ async function importFolders(): Promise<Task> {
   return patchMethod(
     'folder',
     await copyPatch.get(),
-    async (patch) => await copyPatch.apply(patch.src)
+    async (patch) => await copyPatch.apply(patch)
   )
 }
 
