@@ -35,26 +35,29 @@ export const copyManual = async (
   ) {
     await remove(resolve(dest, ...getChunked(name)))
   }
+  try {
+    if (
+      process.platform == 'win32' &&
+      !config.buildOptions.windowsUseSymbolicLinks
+    ) {
+      // Make the directory if it doesn't already exist.
+      await mkdirp(dirname(resolve(dest, ...getChunked(name))))
 
-  if (
-    process.platform == 'win32' &&
-    !config.buildOptions.windowsUseSymbolicLinks
-  ) {
-    // Make the directory if it doesn't already exist.
-    await mkdirp(dirname(resolve(dest, ...getChunked(name))))
-
-    // By default, windows users do not have access to the permissions to create
-    // symbolic links. As a work around, we will just copy the files instead
-    await copyFile(
-      resolve(placeToCheck, ...getChunked(name)),
-      resolve(dest, ...getChunked(name))
-    )
-  } else {
-    // Create the symlink
-    await ensureSymlink(
-      resolve(placeToCheck, ...getChunked(name)),
-      resolve(dest, ...getChunked(name))
-    )
+      // By default, windows users do not have access to the permissions to create
+      // symbolic links. As a work around, we will just copy the files instead
+      await copyFile(
+        resolve(placeToCheck, ...getChunked(name)),
+        resolve(dest, ...getChunked(name))
+      )
+    } else {
+      // Create the symlink
+      await ensureSymlink(
+        resolve(placeToCheck, ...getChunked(name)),
+        resolve(dest, ...getChunked(name))
+      )
+    }
+  } catch (e) {
+    console.error(e) // Just in case we have an error
   }
 
   const gitignore = readFileSync(resolve(ENGINE_DIR, '.gitignore')).toString()
