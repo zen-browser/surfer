@@ -60,6 +60,11 @@ export const init = async (directory: Command | string): Promise<void> => {
     cwd: absoluteInitDirectory,
   })
 
+  await configDispatch('git', {
+    args: ['config', 'core.safecrlf', 'false'],
+    cwd: absoluteInitDirectory,
+  })
+
   log.info('Committing...')
 
   await configDispatch('git', {
