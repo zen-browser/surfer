@@ -129,11 +129,11 @@ const genericBuild = async (os: string, fast = false): Promise<boolean> => {
     `Mach contents: \n ${readFileSync(join(ENGINE_DIR, 'mach'))}\n\n===END===`
   )
 
-  return await configDispatch('./mach', {
+  return (await configDispatch('./mach', {
     args: buildOptions,
     cwd: ENGINE_DIR,
     killOnError: true,
-  })
+  })).success
 }
 
 const parseDate = (d: number) => {

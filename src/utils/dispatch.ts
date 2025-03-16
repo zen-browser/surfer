@@ -2,12 +2,14 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import execa from 'execa'
-import { BASH_PATH } from '../constants'
-import { log } from '../log'
+import execa from 'execa';
+import { BASH_PATH } from '../constants';
+import { log } from '../log';
 
 export const removeTimestamp = (input: string): string =>
   input.replace(/\s\d{1,5}:\d\d\.\d\d /g, '')
+
+type CommandResult = { success: boolean, output: string[] };
 
 export const configDispatch = (
   cmd: string,
@@ -26,7 +28,7 @@ export const configDispatch = (
     shell?: 'default' | 'unix'
     env?: Record<string, string>
   }
-): Promise<boolean> => {
+): Promise<CommandResult> => {
   // Provide a default logger if none was specified by the user
   const logger = config?.logger || ((data: string) => log.info(data))
 
@@ -53,11 +55,15 @@ export const configDispatch = (
     }
   }
 
+  const output: string[] = []
   const handle = (data: string | Error, killOnError?: boolean) => {
     const dataAsString = data.toString()
 
     for (const line of dataAsString.split('\n')) {
-      if (line.length > 0) logger(removeTimestamp(line))
+      if (line.length > 0) {
+        output.push(line)
+        logger(removeTimestamp(line))
+      }
     }
 
     if (killOnError) {
@@ -81,8 +87,8 @@ export const configDispatch = (
     proc.stdout?.on('error', (d) => handle(d, config?.killOnError || false))
     proc.stderr?.on('error', (d) => handle(d, config?.killOnError || false))
 
-    proc.on('exit', () => {
-      resolve(true)
+    proc.on('exit', (code) => {
+      resolve({ success: code === 0, output })
     })
   })
 }
@@ -96,7 +102,7 @@ export const dispatch = (
   cwd?: string,
   killOnError?: boolean,
   logger = (data: string) => log.info(data)
-): Promise<boolean> => {
+): Promise<CommandResult> => {
   return configDispatch(cmd, {
     args: arguments_,
     cwd: cwd,
