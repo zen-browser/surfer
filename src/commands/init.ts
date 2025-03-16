@@ -65,6 +65,8 @@ export const init = async (directory: Command | string): Promise<void> => {
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
     cwd: absoluteInitDirectory,
+    // Committing can fail for configuration issues: see https://github.com/zen-browser/desktop/issues/1877
+    killOnError: true,
   })
 
   await configDispatch('git', {
