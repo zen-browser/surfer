@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { config, configDispatch, dynamicConfig } from '../utils'
+import { config, configDispatch } from '../utils'
 
 export const init = async (directory: Command | string): Promise<void> => {
   const cwd = process.cwd()
@@ -46,17 +46,17 @@ export const init = async (directory: Command | string): Promise<void> => {
   })
 
   await configDispatch('git', {
-    args: ['init'],
-    cwd: absoluteInitDirectory,
-  })
-
-  await configDispatch('git', {
     args: ['checkout', '--orphan', version],
     cwd: absoluteInitDirectory,
   })
 
   await configDispatch('git', {
     args: ['add', '-f', '.'],
+    cwd: absoluteInitDirectory,
+  })
+
+  await configDispatch('git', {
+    args: ['config', 'commit.gpgsign', 'false'],
     cwd: absoluteInitDirectory,
   })
 
