@@ -7,7 +7,7 @@
     "surfer": "./dist/index.js"
   },
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "pnpm run build",
     "test": "jest",
     "test:dev": "jest --watch",
     "build": "tsc && chmod +x ./dist/index.js && cp src/commands/license-check.txt dist/commands/license-check.txt",
