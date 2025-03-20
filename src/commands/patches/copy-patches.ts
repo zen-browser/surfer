@@ -57,8 +57,8 @@ export const copyManual = async (
       )
     }
   } catch (e) {
-    console.info("name: ", name)
-    console.info("patchName: ", patchName)
+    console.info('name: ', name)
+    console.info('patchName: ', patchName)
     console.error(e) // Just in case we have an error
   }
 
