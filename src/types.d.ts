@@ -25,6 +25,7 @@ export interface Cmd {
 export interface CmdOption {
   arg: string
   description: string
+  parse?: (val: string) => unknown
 }
 
 export type CmdFlagPlatform = NodeJS.Platform
