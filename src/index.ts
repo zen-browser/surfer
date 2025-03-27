@@ -108,9 +108,10 @@ for (const command of commands) {
 
   // Register all of the required options
   for (const opt of command?.options || []) {
-    buildCommand = opt.parse !== undefined ?
-      buildCommand.option(opt.arg, opt.description, opt.parse) :
-      buildCommand.option(opt.arg, opt.description);
+    buildCommand =
+      opt.parse !== undefined
+        ? buildCommand.option(opt.arg, opt.description, opt.parse)
+        : buildCommand.option(opt.arg, opt.description)
   }
 
   buildCommand = buildCommand.action(async (...arguments_) => {
