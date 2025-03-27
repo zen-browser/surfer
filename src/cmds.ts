@@ -32,7 +32,7 @@ export const commands: Cmd[] = [
       {
         arg: "-j, --jobs <number>",
         description:
-          'Number of jobs to run in parallel. Defaults to the number of cores on your machine.',
+          'Number of jobs to run in parallel',
         parse: (val: string) => {
           const parsed = parseInt(val, 10)
           if (isNaN(parsed)) {
