@@ -155,7 +155,7 @@ export const surferPackage = async () => {
   log.success('Packaging complected!')
 }
 
-function getCurrentBrandName(): string {
+export function getCurrentBrandName(): string {
   const brand = dynamicConfig.get('brand') as string
 
   if (brand == 'unofficial') {

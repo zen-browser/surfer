@@ -1,4 +1,5 @@
 import { config } from '..'
+import { getCurrentBrandName } from '../commands/package'
 import { getFFVersionOrCandidate } from '../utils'
 
 const otherBuildModes = `# You can change to other build modes by running:
@@ -53,5 +54,9 @@ export ZEN_FIREFOX_VERSION=${getFFVersionOrCandidate()}
 export MOZ_APPUPDATE_HOST=${
     config.updateHostname || 'localhost:7648 # This should not resolve'
   }
-`
+` + process.platform === 'macos' ? `
+
+# MacOS specific settings
+export MOZ_MACBUNDLE_NAME=${getCurrentBrandName()}
+  ` : '';
 }
