@@ -30,7 +30,7 @@ export const commands: Cmd[] = [
           "Doesn't check to see if all of the patches have been applied",
       },
       {
-        arg: "-j, --jobs <number>",
+        arg: '-j, --jobs <number>',
         description:
           'Number of jobs to run in parallel',
         parse: (val: string) => {
