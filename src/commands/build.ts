@@ -31,7 +31,7 @@ const applyConfig = async (os: string) => {
 
   try {
     // Retrieve changeset
-    const { stdout } = await execa('git', ['rev-parse', 'HEAD'])
+    const { stdout } = await execa('git', ['rev-parse','--', 'HEAD'])
     changeset = stdout.trim()
   } catch (error) {
     log.warning(
