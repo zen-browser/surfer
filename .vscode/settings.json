@@ -1,9 +1,0 @@
-{
-  "gitmoji.additionalEmojis": [
-    {
-      "emoji": "🔄",
-      "code": ":arrows_counterclockwise:",
-      "description": "Update changelog"
-    }
-  ]
-}
