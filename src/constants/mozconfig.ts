@@ -54,7 +54,7 @@ export ZEN_FIREFOX_VERSION=${getFFVersionOrCandidate()}
 export MOZ_APPUPDATE_HOST=${
     config.updateHostname || 'localhost:7648 # This should not resolve'
   }
-` + process.platform === 'macos' ? `
+` + (process as any).surferPlatform === 'darwin' ? `
 
 # MacOS specific settings
 export MOZ_MACBUNDLE_NAME="${getCurrentBrandName()}.app"
