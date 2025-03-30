@@ -8,7 +8,7 @@ import { copyFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import glob from 'tiny-glob'
 
-import { appendToFileSync, mkdirp } from '../../utils'
+import { appendToFileSync, ensureDirectory, mkdirp } from '../../utils'
 import { config } from '../..'
 import { CURRENT_DIR, ENGINE_DIR, SRC_DIR, TESTS_DIR } from '../../constants'
 import { IMelonPatch } from './command'
@@ -104,6 +104,7 @@ export async function get(): Promise<ICopyPatch[]> {
     }
   })
 
+  await ensureDirectory('./tests')
   const testFiles = await glob('./tests/**/*', {
     filesOnly: true,
     cwd: '.',
