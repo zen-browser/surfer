@@ -62,7 +62,7 @@ async function unpackFirefoxSource(name: string): Promise<void> {
     // check for it and ask for the user to install it if necessary
     if (!commandExistsSync('gtar')) {
       throw new Error(
-        `GNU Tar is required to extract Firefox's source on MacOS. Please install it using the command |brew install gnu-tar| and try again`
+        `GNU Tar is required to extract Firefox's source on MacOS. Please install it using the command |brew install gnu-tar| or |sudo port install gnutar| and try again`
       )
     }
 
