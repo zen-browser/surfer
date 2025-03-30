@@ -40,6 +40,14 @@ import { IMelonPatch } from './command'
 export const BRANDING_DIR = join(CONFIGS_DIR, 'branding')
 const BRANDING_STORE = join(ENGINE_DIR, 'browser', 'branding')
 const BRANDING_FF = join(BRANDING_STORE, 'unofficial')
+const SHARED_NSH = join(
+  ENGINE_DIR,
+  'browser',
+  'installer',
+  'windows',
+  'nsis',
+  'shared.nsh'
+)
 
 const REQUIRED_FILES = [
   'logo.png',
@@ -356,6 +364,15 @@ function configureBrandingNsis(
 # This color is written as 0x00BBGGRR because it's actually a COLORREF value.
 !define PROGRESS_BAR_BACKGROUND_COLOR 0xFFAA00
 `
+  )
+  writeFileSync(
+    SHARED_NSH,
+    readFileSync(SHARED_NSH)
+      .toString()
+      .replace(
+        '"Publisher" "Mozilla"',
+        `"Publisher" "${brandingConfig.brandingVendor}"`
+      )
   )
 }
 
