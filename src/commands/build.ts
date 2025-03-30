@@ -110,7 +110,7 @@ const applyConfig = async (os: string) => {
   writeFileSync(join(ENGINE_DIR, 'browser/config/version_display.txt'), version)
 }
 
-const genericBuild = async (os: string, fast = false): Promise<boolean> => {
+const genericBuild = async (os: string, fast = false, jobs: number): Promise<boolean> => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
@@ -121,6 +121,10 @@ const genericBuild = async (os: string, fast = false): Promise<boolean> => {
 
   if (fast) {
     buildOptions.push('faster')
+  }
+
+  if (jobs) {
+    buildOptions.push(`-j${jobs}`)
   }
 
   log.debug(`Running with build options ${buildOptions.join(', ')}`)
@@ -156,6 +160,7 @@ const success = (date: number) => {
 
 interface Options {
   ui: boolean
+  jobs: number
   skipPatchCheck: boolean
 }
 
@@ -177,7 +182,7 @@ export const build = async (options: Options): Promise<void> => {
 
     log.info('Starting build...')
 
-    let exit = await genericBuild(prettyHost, options.ui)
+    let exit = await genericBuild(prettyHost, options.ui, options.jobs)
     process.exit(exit ? 0 : 1)
   }
 }

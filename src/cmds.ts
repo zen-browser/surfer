@@ -29,6 +29,18 @@ export const commands: Cmd[] = [
         description:
           "Doesn't check to see if all of the patches have been applied",
       },
+      {
+        arg: '-j, --jobs <number>',
+        description:
+          'Number of jobs to run in parallel',
+        parse: (val: string) => {
+          const parsed = parseInt(val, 10)
+          if (isNaN(parsed)) {
+            throw new Error('Invalid number of jobs')
+          }
+          return parsed
+        }
+      }
     ],
     requestController: async () => (await import('./commands/build')).build,
   },
