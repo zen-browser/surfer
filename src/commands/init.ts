@@ -6,7 +6,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { bin_name } from '..'
 import { log } from '../log'
-import { config, configDispatch, dynamicConfig } from '../utils'
+import { config, configDispatch } from '../utils'
 
 export const init = async (directory: Command | string): Promise<void> => {
   const cwd = process.cwd()
@@ -46,11 +46,6 @@ export const init = async (directory: Command | string): Promise<void> => {
   })
 
   await configDispatch('git', {
-    args: ['init'],
-    cwd: absoluteInitDirectory,
-  })
-
-  await configDispatch('git', {
     args: ['checkout', '--orphan', version],
     cwd: absoluteInitDirectory,
   })
@@ -60,11 +55,23 @@ export const init = async (directory: Command | string): Promise<void> => {
     cwd: absoluteInitDirectory,
   })
 
+  await configDispatch('git', {
+    args: ['config', 'commit.gpgsign', 'false'],
+    cwd: absoluteInitDirectory,
+  })
+
+  await configDispatch('git', {
+    args: ['config', 'core.safecrlf', 'false'],
+    cwd: absoluteInitDirectory,
+  })
+
   log.info('Committing...')
 
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
     cwd: absoluteInitDirectory,
+    // Committing can fail for configuration issues: see https://github.com/zen-browser/desktop/issues/1877
+    killOnError: true,
   })
 
   await configDispatch('git', {
