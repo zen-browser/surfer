@@ -2,14 +2,14 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import execa from 'execa';
-import { BASH_PATH } from '../constants';
-import { log } from '../log';
+import execa from 'execa'
+import { BASH_PATH } from '../constants'
+import { log } from '../log'
 
 export const removeTimestamp = (input: string): string =>
   input.replace(/\s\d{1,5}:\d\d\.\d\d /g, '')
 
-type CommandResult = { success: boolean, output: string[] };
+type CommandResult = { success: boolean; output: string[] }
 
 export const configDispatch = (
   cmd: string,

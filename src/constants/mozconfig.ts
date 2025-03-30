@@ -36,7 +36,8 @@ ac_add_options --enable-rust-simd`
     }
   }
 
-  return `
+  return (
+    `
 # =====================
 # Internal surfer config
 # =====================
@@ -52,11 +53,15 @@ ac_add_options --enable-update-channel=${brand}
 
 export ZEN_FIREFOX_VERSION=${getFFVersionOrCandidate()}
 export MOZ_APPUPDATE_HOST=${
-    config.updateHostname || 'localhost:7648 # This should not resolve'
-  }
-` + (process as any).surferPlatform === 'darwin' ? `
+      config.updateHostname || 'localhost:7648 # This should not resolve'
+    }
+` +
+    ((process as any).surferPlatform === 'darwin'
+      ? `
 
 # MacOS specific settings
 export MOZ_MACBUNDLE_NAME="${getCurrentBrandName()}.app"
-  ` : '';
+  `
+      : '')
+  )
 }

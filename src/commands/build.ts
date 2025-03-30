@@ -110,7 +110,11 @@ const applyConfig = async (os: string) => {
   writeFileSync(join(ENGINE_DIR, 'browser/config/version_display.txt'), version)
 }
 
-const genericBuild = async (os: string, fast = false, jobs: number): Promise<boolean> => {
+const genericBuild = async (
+  os: string,
+  fast = false,
+  jobs: number
+): Promise<boolean> => {
   log.info(`Building for "${os}"...`)
 
   log.warning(
@@ -133,11 +137,13 @@ const genericBuild = async (os: string, fast = false, jobs: number): Promise<boo
     `Mach contents: \n ${readFileSync(join(ENGINE_DIR, 'mach'))}\n\n===END===`
   )
 
-  return (await configDispatch('./mach', {
-    args: buildOptions,
-    cwd: ENGINE_DIR,
-    killOnError: true,
-  })).success
+  return (
+    await configDispatch('./mach', {
+      args: buildOptions,
+      cwd: ENGINE_DIR,
+      killOnError: true,
+    })
+  ).success
 }
 
 const parseDate = (d: number) => {
