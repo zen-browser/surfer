@@ -57,6 +57,6 @@ export MOZ_APPUPDATE_HOST=${
 ` + process.platform === 'macos' ? `
 
 # MacOS specific settings
-export MOZ_MACBUNDLE_NAME=${getCurrentBrandName()}
+export MOZ_MACBUNDLE_NAME="${getCurrentBrandName()}.app"
   ` : '';
 }
