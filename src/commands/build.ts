@@ -50,8 +50,8 @@ const applyConfig = async (os: string) => {
     name: config.name,
     vendor: config.name,
     appId: config.appId,
-    brandingDir: existsSync(join(ENGINE_DIR, 'branding', 'surfer'))
-      ? 'branding/surfer'
+    brandingDir: existsSync(join(ENGINE_DIR, 'branding', brandingKey))
+      ? 'branding/' + brandingKey
       : 'branding/unofficial',
     binName: config.binaryName,
     changeset,
