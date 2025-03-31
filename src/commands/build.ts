@@ -53,8 +53,8 @@ const applyConfig = async (os: string) => {
     brandingDir: existsSync(
       join(ENGINE_DIR, 'browser', 'branding', brandingKey)
     )
-      ? 'branding/' + brandingKey
-      : 'branding/unofficial',
+      ? 'browser/branding/' + brandingKey
+      : 'browser/branding/unofficial',
     binName: config.binaryName,
     changeset,
   }
