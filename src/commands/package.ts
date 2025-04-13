@@ -58,20 +58,16 @@ export const surferPackage = async () => {
       )}...`
     )
 
-    const currentCWD = process.cwd()
+    await dispatch(machPath, arguments_, ENGINE_DIR, true)
 
-    if (!process.env.SURFER_SIGNING_MODE) {
-      await dispatch(machPath, arguments_, ENGINE_DIR, true)
+    log.info('Copying language packs')
 
-      log.info('Copying language packs')
-
-      await dispatch(
-        machPath,
-        ['package-multi-locale', '--locales', ...(await getLocales())],
-        ENGINE_DIR,
-        true
-      )
-    }
+    await dispatch(
+      machPath,
+      ['package-multi-locale', '--locales', ...(await getLocales())],
+      ENGINE_DIR,
+      true
+    )
 
     log.info('Copying results up')
 
