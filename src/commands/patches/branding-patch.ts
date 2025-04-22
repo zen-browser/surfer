@@ -147,6 +147,7 @@ async function setupLocale(
     brandFullName: string
     brandingGenericName: string
     brandingVendor: string
+    appId: string
   }
 ) {
   for (const file of await walkDirectory(
@@ -266,7 +267,7 @@ export async function apply(name: string): Promise<void> {
   ensureEmpty(outputPath)
 
   await setupImages(configPath, outputPath)
-  await setupLocale(outputPath, brandingConfig)
+  await setupLocale(outputPath, {...brandingConfig, appId: config.appId})
   await copyMozFiles(outputPath, brandingConfig)
   await addOptionalIcons(configPath, outputPath)
 
