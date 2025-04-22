@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 MOZ_APP_DISPLAYNAME="${brandShortName}"
-MOZ_MACBUNDLE_ID=${appId}
+MOZ_MACBUNDLE_ID="${appId}"
 
 if test "$DEVELOPER_OPTIONS"; then
   if test "$MOZ_DEBUG"; then
