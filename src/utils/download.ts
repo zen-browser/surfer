@@ -38,7 +38,7 @@ export async function downloadFileToLocation(
             })
           : process.stdout,
       })
-      progressBar.start(length as number, receivedBytes)
+      progressBar.start(length as any, receivedBytes)
 
       data.on('data', (chunk: { length: number }) => {
         receivedBytes += chunk.length
