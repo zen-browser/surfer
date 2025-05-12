@@ -51,7 +51,7 @@
     "prompts": "^2.4.1",
     "rustic": "^1.2.1",
     "semver": "^7.3.7",
-    "sharp": "^0.30.7",
+    "sharp": "^0.32.6",
     "tiny-glob": "^0.2.9",
     "xmlbuilder2": "^3.0.2"
   },
