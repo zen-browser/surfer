@@ -11,9 +11,9 @@ import { Task, TaskList } from '../utils/task-list'
 const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico)')
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
 const fixableFiles = [
-  { regex: new RegExp('.*\\.(j|t)s'), comment: '// ', commentClose: '\n' },
+  { regex: new RegExp('.*\\.(mj|j|t)s'), comment: '// ', commentClose: '\n' },
   {
-    regex: new RegExp('.*(\\.inc)?\\.css'),
+    regex: new RegExp('.*\\.css'),
     commentOpen: '/*\n',
     comment: ' * ',
     commentClose: '\n */',
@@ -49,9 +49,14 @@ export async function isValidLicense(path: string): Promise<boolean> {
     (lines.includes('the Mozilla Public') &&
       lines.includes('If a copy of the MPL was') &&
       lines.includes('http://mozilla.org/MPL/2.0/')) ||
-    licenseIgnore.test(contents.join('\n'))
+    licenseIgnore.test(contents.join('\n')) ||
+    (lines.includes('Any copyright is dedicated to the Public') &&
+      lines.includes('https://creativecommons.org/publicdomain'))
 
-  return hasLicense
+  return hasLicense || (
+    path.endsWith('.min.js') ||
+    path.endsWith('.min.mjs')
+  )
 }
 
 export function createTask(path: string, noFix: boolean): Task {
