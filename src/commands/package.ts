@@ -91,9 +91,7 @@ export const surferPackage = async () => {
     if ((process as any).surferPlatform == 'win32') {
       const installerDistributionDirectory = join(
         OBJ_DIR,
-        'dist',
-        'install',
-        'sea'
+        'dist'
       )
 
       if (!existsSync(installerDistributionDirectory)) {
