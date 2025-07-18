@@ -8,7 +8,7 @@ import { SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
 import { Task, TaskList } from '../utils/task-list'
 
-const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico)')
+const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico|woff2|dep)');
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
 const fixableFiles = [
   { regex: new RegExp('.*\\.(mj|j|t)s'), comment: '// ', commentClose: '\n' },
