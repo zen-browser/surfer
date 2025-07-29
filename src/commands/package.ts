@@ -20,9 +20,9 @@ import { lstatSync, readFile, remove, removeSync } from 'fs-extra'
 const machPath = resolve(ENGINE_DIR, 'mach')
 
 async function getLocales() {
-  // l10n/supported-languages is a list of locales divided by newlines
+  // locales/supported-languages is a list of locales divided by newlines
   // open the file and split it by newlines
-  const localesText = await readFile('l10n/supported-languages', 'utf-8')
+  const localesText = await readFile('locales/supported-languages', 'utf-8')
   log.info(`Found locales:\n${localesText}`)
   return localesText.split('\n')
 }
