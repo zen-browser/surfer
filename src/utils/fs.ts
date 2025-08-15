@@ -27,7 +27,7 @@ export const windowsPathToUnix = (path: string): string =>
       path.replace(/[\\]+/g, '/').replace(/^([a-zA-Z]+:|\.\/)/, '')
     : path
 
-export async function walkDirectory(directory: string): Promise<string[]> {
+export async function walkDirectory(directory: string, ignore?: string): Promise<string[]> {
   const output = []
 
   if (!isAbsolute(directory)) {
@@ -41,6 +41,11 @@ export async function walkDirectory(directory: string): Promise<string[]> {
     for (const file of directoryContents) {
       const fullPath = join(directory, file)
       const fStat = await stat(fullPath)
+
+      // If the file is in the ignore list, skip it
+      if (ignore && fullPath.startsWith(ignore)) {
+        continue
+      }
 
       if (fStat.isDirectory()) {
         for (const newFile of await walkDirectory(fullPath)) {
