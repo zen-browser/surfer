@@ -4,7 +4,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-import { CURRENT_DIR } from '../constants'
+import { CURRENT_DIR, ENGINE_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
 import { Task, TaskList } from '../utils/task-list'
 
@@ -104,9 +104,10 @@ interface Options {
 }
 
 export const licenseCheck = async (options: Options): Promise<void> => {
-  const files = await walkDirectory(CURRENT_DIR)
+  const files = await walkDirectory(CURRENT_DIR);
+  const filteredFiles = files.filter((file) => !file.startsWith(ENGINE_DIR));
 
-  await new TaskList(files.map((file) => createTask(file, !options.fix)))
+  await new TaskList(filteredFiles.map((file) => createTask(file, !options.fix)))
     .onError('inline')
     .run()
 }
