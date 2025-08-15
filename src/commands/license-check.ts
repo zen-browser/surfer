@@ -4,7 +4,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-import { SRC_DIR } from '../constants'
+import { CURRENT_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
 import { Task, TaskList } from '../utils/task-list'
 
@@ -62,7 +62,7 @@ export async function isValidLicense(path: string): Promise<boolean> {
 export function createTask(path: string, noFix: boolean): Task {
   return {
     skip: () => ignoredFiles.test(path),
-    name: path.replace(SRC_DIR, ''),
+    name: path.replace(CURRENT_DIR, ''),
     task: async () => {
       const contents = await readFile(path, { encoding: 'utf8' })
       const contentsSplitNewline = contents.split('\n')
@@ -104,7 +104,7 @@ interface Options {
 }
 
 export const licenseCheck = async (options: Options): Promise<void> => {
-  const files = await walkDirectory(SRC_DIR)
+  const files = await walkDirectory(CURRENT_DIR)
 
   await new TaskList(files.map((file) => createTask(file, !options.fix)))
     .onError('inline')
