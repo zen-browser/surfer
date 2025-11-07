@@ -195,7 +195,7 @@ export function rawConfig(): string {
   } else {
     if (!hasWarnedAboutConfig) {
       log.warning(
-        `Config file not found at ${configPath}. It is recommended to create one by running |melon setup-project|`
+        `Config file not found at ${configPath}. It is recommended to create one by running |surfer setup-project|`
       )
       hasWarnedAboutConfig = true
     }
