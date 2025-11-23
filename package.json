@@ -1,6 +1,6 @@
 {
   "name": "@zen-browser/surfer",
-  "version": "1.11.25",
+  "version": "1.11.26",
   "description": "Simplifying building firefox forks!",
   "main": "index.js",
   "bin": {
@@ -20,7 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/zen-browser/surfer.git"
   },
-  "type": "module",
   "keywords": [
     "firefox",
     "firefox-fork",
