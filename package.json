@@ -53,7 +53,7 @@
     "semver": "^7.3.7",
     "sharp": "^0.32.6",
     "tiny-glob": "^0.2.9",
-    "xmlbuilder2": "^3.0.2"
+    "xmlbuilder2": "^4.0.0"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
