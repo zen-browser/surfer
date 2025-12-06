@@ -8,7 +8,9 @@ import { SRC_DIR } from '../constants'
 import { walkDirectory } from '../utils/fs'
 import { Task, TaskList } from '../utils/task-list'
 
-const ignoredFiles = new RegExp('.*\\.(json|patch|md|jpeg|png|gif|tiff|ico|woff2|dep)');
+const ignoredFiles = new RegExp(
+  '.*\\.(json|patch|md|jpeg|png|gif|tiff|ico|woff2|dep)'
+)
 const licenseIgnore = new RegExp('(//|#) Ignore license in this file', 'g')
 const fixableFiles = [
   { regex: new RegExp('.*\\.(mj|j|t)s'), comment: '// ', commentClose: '\n' },
@@ -53,10 +55,7 @@ export async function isValidLicense(path: string): Promise<boolean> {
     (lines.includes('Any copyright is dedicated to the Public') &&
       lines.includes('https://creativecommons.org/publicdomain'))
 
-  return hasLicense || (
-    path.endsWith('.min.js') ||
-    path.endsWith('.min.mjs')
-  )
+  return hasLicense || path.endsWith('.min.js') || path.endsWith('.min.mjs')
 }
 
 export function createTask(path: string, noFix: boolean): Task {
@@ -104,7 +103,7 @@ interface Options {
 }
 
 export const licenseCheck = async (options: Options): Promise<void> => {
-  const files = await walkDirectory(SRC_DIR);
+  const files = await walkDirectory(SRC_DIR)
 
   await new TaskList(files.map((file) => createTask(file, !options.fix)))
     .onError('inline')

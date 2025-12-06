@@ -113,14 +113,16 @@ async function unpackFirefoxSource(name: string): Promise<void> {
 }
 
 async function downloadFirefoxSource(version: string, isCandidate = false) {
-  let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
-  if (isCandidate) {
-    console.log('Using candidate build')
-    base = `https://archive.mozilla.org/pub/firefox/candidates/${version}-candidates/build1/source/`
-  }
   const filename = `firefox-${version}.source.tar.xz`
+  const getReleaseUri = (build: string) => {
+    let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
+    if (isCandidate) {
+      console.log('Using candidate build')
+      base = `https://archive.mozilla.org/pub/firefox/candidates/${version}-candidates/${build}/source/`
+    }
 
-  const url = base + filename
+    return base + filename
+  }
 
   const fsParent = MELON_TMP_DIR
   const fsSaveLocation = resolve(fsParent, filename)
@@ -142,7 +144,15 @@ async function downloadFirefoxSource(version: string, isCandidate = false) {
 
   log.info(`Downloading Firefox release ${version}...`)
 
-  await downloadFileToLocation(url, resolve(MELON_TMP_DIR, filename))
+  for (const build of ['build2', 'build1']) {
+    try {
+      // Try to download the second build first, as it is more likely to be the
+      // correct build
+      const url = getReleaseUri(build)
+      await downloadFileToLocation(url, resolve(MELON_TMP_DIR, filename))
+      break
+    } catch {}
+  }
   return filename
 }
 

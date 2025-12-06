@@ -27,7 +27,10 @@ export const windowsPathToUnix = (path: string): string =>
       path.replace(/[\\]+/g, '/').replace(/^([a-zA-Z]+:|\.\/)/, '')
     : path
 
-export async function walkDirectory(directory: string, ignore?: string): Promise<string[]> {
+export async function walkDirectory(
+  directory: string,
+  ignore?: string
+): Promise<string[]> {
   const output = []
 
   if (!isAbsolute(directory)) {

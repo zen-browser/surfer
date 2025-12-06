@@ -89,10 +89,7 @@ export const surferPackage = async () => {
     // Windows has some special dist files that are available within the dist
     // directory.
     if ((process as any).surferPlatform == 'win32') {
-      const installerDistributionDirectory = join(
-        OBJ_DIR,
-        'dist'
-      )
+      const installerDistributionDirectory = join(OBJ_DIR, 'dist')
 
       if (!existsSync(installerDistributionDirectory)) {
         log.error(
