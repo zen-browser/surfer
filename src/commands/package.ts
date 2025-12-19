@@ -22,7 +22,23 @@ const machPath = resolve(ENGINE_DIR, 'mach')
 async function getLocales() {
   // locales/supported-languages is a list of locales divided by newlines
   // open the file and split it by newlines
-  const localesText = await readFile('locales/supported-languages', 'utf-8')
+  let localesText = await readFile('locales/supported-languages', 'utf-8');
+  const languageMaps = await readFile('locales/language-maps', 'utf-8');
+  // Language maps contains a list of locale mappings for specific locales
+  // e.g. "nb:nb-NO" means that "nb" should be mapped to "nb-NO"
+  const mappings: Record<string, string> = {}
+  for (const line of languageMaps.split('\n')) {
+    const [key, value] = line.split(':')
+    if (key && value) {
+      mappings[key.trim()] = value.trim()
+    }
+  }
+  localesText = localesText
+    .split('\n')
+    .map((locale) => locale.trim())
+    .filter((locale) => locale.length > 0)
+    .map((locale) => (mappings[locale] ? mappings[locale] : locale))
+    .join('\n')
   log.info(`Found locales:\n${localesText}`)
   return localesText.split('\n')
 }
