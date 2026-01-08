@@ -135,6 +135,10 @@ export interface Config {
      * Release candidate version
      */
     candidate?: string
+    /*
+     * Release candidate build number
+     */
+    candidateBuild?: number
   }
   buildOptions: {
     windowsUseSymbolicLinks: boolean

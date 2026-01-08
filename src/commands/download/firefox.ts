@@ -34,8 +34,8 @@ export function shouldSetupFirefoxSource() {
   )
 }
 
-export async function setupFirefoxSource(version: string, isCandidate = false) {
-  const firefoxSourceTar = await downloadFirefoxSource(version, isCandidate)
+export async function setupFirefoxSource(version: string, candidateBuild: number, isCandidate = false) {
+  const firefoxSourceTar = await downloadFirefoxSource(version, candidateBuild, isCandidate)
 
   await unpackFirefoxSource(firefoxSourceTar)
 
@@ -112,7 +112,11 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   log.info(`Unpacked Firefox source to ${ENGINE_DIR}`)
 }
 
-async function downloadFirefoxSource(version: string, isCandidate = false) {
+async function downloadFirefoxSource(
+  version: string,
+  candidateBuild: number,
+  isCandidate = false
+) {
   const filename = `firefox-${version}.source.tar.xz`
   const getReleaseUri = (build: string) => {
     let base = `https://archive.mozilla.org/pub/firefox/releases/${version}/source/`
@@ -144,15 +148,10 @@ async function downloadFirefoxSource(version: string, isCandidate = false) {
 
   log.info(`Downloading Firefox release ${version}...`)
 
-  for (const build of ['build2', 'build1']) {
-    try {
-      // Try to download the second build first, as it is more likely to be the
-      // correct build
-      const url = getReleaseUri(build)
-      await downloadFileToLocation(url, resolve(MELON_TMP_DIR, filename))
-      break
-    } catch {}
-  }
+  // Try to download the second build first, as it is more likely to be the
+  // correct build
+  const url = getReleaseUri(`build${candidateBuild}`)
+  await downloadFileToLocation(url, resolve(MELON_TMP_DIR, filename))
   return filename
 }
 
@@ -173,8 +172,10 @@ export async function downloadInternals({
     process.exit(1)
   }
 
+  let candidateBuild = 1
   if (isCandidate) {
     version = config.version.candidate as string
+    candidateBuild = config.version.candidateBuild as number
   }
 
   if (force && existsSync(ENGINE_DIR)) {
@@ -192,7 +193,7 @@ export async function downloadInternals({
   }
 
   if (!existsSync(ENGINE_DIR)) {
-    await setupFirefoxSource(version, isCandidate)
+    await setupFirefoxSource(version, candidateBuild, isCandidate)
   }
 
   for (const addon of getAddons()) {
