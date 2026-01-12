@@ -10,6 +10,7 @@ import { join } from 'node:path'
 import { BIN_NAME } from '../constants'
 
 import { log } from '../log'
+import { dynamicConfig } from '.'
 
 export const projectDirectory = process.cwd()
 export const configPath = join(projectDirectory, 'surfer.json')
@@ -223,10 +224,14 @@ export function getConfig(): Config {
   }
 
   // Provide some useful warnings to the user to help improve their config files
+  let currentBrand = dynamicConfig.get('brand') as string;
   if (!fileParsed.binaryName) {
     log.warning(
       'It is recommended that you provide a `binaryName` field in your config file, otherwise packaging may get messed up'
     )
+  } else if (currentBrand && currentBrand !== 'release') {
+    // Add a `-{brand}` suffix to the binary name, we should lowercase it too
+    fileParsed.binaryName += `-${currentBrand.toLowerCase()}`
   }
 
   // Merge the default config with the file parsed config
