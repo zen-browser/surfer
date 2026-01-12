@@ -36,6 +36,13 @@ export const init = async (directory: Command | string): Promise<void> => {
 
   version = version.trim().replace(/\\n/g, '')
 
+  if (process.env.ZEN_DOWNLOAD_DONT_INIT_GIT === '1') {
+    log.info(
+      'Skipping git initialization as ZEN_DOWNLOAD_DONT_INIT_GIT is set to 1'
+    )
+    return
+  }
+
   // TODO: Use bash on windows, this may significantly improve performance.
   // Still needs testing though
   log.info('Initializing git, this may take some time')
