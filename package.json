@@ -71,7 +71,7 @@
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.15.0",
     "eslint-plugin-unicorn": "^44.0.2",
-    "jest": "^27.4.5",
+    "jest": "^30.2.0",
     "prettier": "^2.2.1",
     "ts-jest": "^27.1.2",
     "typescript": "^4.1.3"
