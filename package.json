@@ -1,6 +1,6 @@
 {
   "name": "@zen-browser/surfer",
-  "version": "1.13.3",
+  "version": "1.13.4",
   "description": "Simplifying building firefox forks!",
   "main": "index.js",
   "bin": {
@@ -53,7 +53,7 @@
     "semver": "^7.3.7",
     "sharp": "^0.32.6",
     "tiny-glob": "^0.2.9",
-    "xmlbuilder2": "^3.0.2"
+    "xmlbuilder2": "^4.0.3"
   },
   "devDependencies": {
     "@types/cli-progress": "^3.9.2",
@@ -71,7 +71,7 @@
     "@typescript-eslint/parser": "^5.22.0",
     "eslint": "^8.15.0",
     "eslint-plugin-unicorn": "^44.0.2",
-    "jest": "^27.4.5",
+    "jest": "^30.3.0",
     "prettier": "^2.2.1",
     "ts-jest": "^27.1.2",
     "typescript": "^4.1.3"
