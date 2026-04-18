@@ -12,7 +12,7 @@ import * as brandingPatch from './branding-patch'
 import { patchCountFile } from '../../middleware/patch-check'
 import { checkHash } from '../../utils'
 import { Task, TaskList } from '../../utils/task-list'
-import { writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 
 export interface IMelonPatch {
   name: string
@@ -94,6 +94,90 @@ async function importGitPatch(): Promise<Task> {
   )
 }
 
+async function importCertPatches(): Promise<Task> {
+  const [name, issuer] = [
+    process.env.SURFER_CERT_PATCH_NAME,
+    process.env.SURFER_CERT_PATCH_ISSUER,
+  ]
+  if (!name || !issuer) {
+    return {
+      name: 'Apply cert patch',
+      skip: () => true,
+      task: () => {},
+    }
+  }
+
+  const mozillaName = 'Mozilla Corporation'
+  const mozillaIssuer =
+    'DigiCert Trusted G4 Code Signing RSA4096 SHA384 2021 CA1'
+  const mozillaIssuerPrev = 'DigiCert SHA2 Assured ID Code Signing CA'
+  return {
+    name: `Apply cert patches`,
+    task: async () => {
+      const files = {
+        'engine/browser/installer/windows/nsis/defines.nsi.in': [
+          [
+            `!define CERTIFICATE_NAME            "${mozillaName}"`,
+            `!define CERTIFICATE_NAME            "${name}"`,
+          ],
+          [
+            `!define CERTIFICATE_ISSUER          "${mozillaIssuer}"`,
+            `!define CERTIFICATE_ISSUER          "${issuer}"`,
+          ],
+          [
+            `!define CERTIFICATE_ISSUER_PREVIOUS "${mozillaIssuerPrev}"`,
+            `!define CERTIFICATE_ISSUER_PREVIOUS "${mozillaIssuer}"`,
+          ],
+        ],
+        'engine/toolkit/components/maintenanceservice/bootstrapinstaller/maintenanceservice_installer.nsi':
+          [
+            [
+              `WriteRegStr HKLM "\${FallbackKey}\\0" "name" "${mozillaName}"`,
+              `WriteRegStr HKLM "\${FallbackKey}\\0" "name" "${name}"`,
+            ],
+            [
+              `WriteRegStr HKLM "\${FallbackKey}\\0" "issuer" "${mozillaIssuer}"`,
+              `WriteRegStr HKLM "\${FallbackKey}\\0" "issuer" "${issuer}"`,
+            ],
+          ],
+      }
+      // Add branding.nsi browser/branding/<<x>>
+      const brandingFiles = await glob('browser/branding/*/branding.nsi', {
+        filesOnly: true,
+        cwd: ENGINE_DIR,
+      })
+      for (const file of brandingFiles) {
+        const brandName = file.split('/')[2]
+        files[
+          `engine/browser/branding/${brandName}/branding.nsi` as keyof typeof files
+        ] = [
+          [
+            `!define CertNameDownload   "${mozillaName}"`,
+            `!define CertNameDownload   "${name}"`,
+          ],
+          [
+            `!define CertIssuerDownload "${mozillaIssuer}"`,
+            `!define CertIssuerDownload "${issuer}"`,
+          ],
+        ]
+      }
+      for (const file of Object.keys(files)) {
+        const content = await readFile(file, 'utf-8')
+        const replacements = files[file as keyof typeof files]
+        let newContent = content
+        for (const [searchValue, replaceValue] of replacements) {
+          // If the content doesn't exist, error out to avoid accidentally replacing with an empty string
+          if (!content.includes(searchValue)) {
+            throw new Error(`Could not find "${searchValue}" in ${file}`)
+          }
+          newContent = newContent.replace(searchValue, replaceValue)
+        }
+        await writeFile(file, newContent, 'utf-8')
+      }
+    },
+  }
+}
+
 async function importInternalPatch(): Promise<Task> {
   const patches = await glob('*.patch', {
     filesOnly: true,
@@ -118,6 +202,7 @@ export async function applyPatches(): Promise<void> {
     canDoBrandingPatch ? importMelonPatches() : undefined,
     await importFolders(),
     await importGitPatch(),
+    await importCertPatches(),
   ].filter((task) => task !== undefined) as Task[]
   await new TaskList(tasks).run()
 }

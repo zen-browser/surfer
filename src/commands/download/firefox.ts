@@ -34,8 +34,16 @@ export function shouldSetupFirefoxSource() {
   )
 }
 
-export async function setupFirefoxSource(version: string, candidateBuild: number, isCandidate = false) {
-  const firefoxSourceTar = await downloadFirefoxSource(version, candidateBuild, isCandidate)
+export async function setupFirefoxSource(
+  version: string,
+  candidateBuild: number,
+  isCandidate = false
+) {
+  const firefoxSourceTar = await downloadFirefoxSource(
+    version,
+    candidateBuild,
+    isCandidate
+  )
 
   await unpackFirefoxSource(firefoxSourceTar)
 
