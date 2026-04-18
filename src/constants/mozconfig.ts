@@ -48,7 +48,6 @@ ${buildOptions}
 ac_add_options --with-branding=browser/branding/${brand}
 
 # Config for updates
-ac_add_options --enable-unverified-updates
 ac_add_options --enable-update-channel=${brand}
 
 export ZEN_FIREFOX_VERSION=${getFFVersionOrCandidate()}
