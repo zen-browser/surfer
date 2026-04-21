@@ -213,6 +213,7 @@ async function createMarFile(
     env: {
       MOZ_PRODUCT_VERSION: version,
       MAR_CHANNEL_ID: channel,
+      ACCEPTED_MAR_CHANNEL_IDS: channel,
       MAR: process.env.MAR ? windowsPathToUnix(process.env.MAR) : marBinary,
     },
     shell: process.env.SURFER_SIGNING_MODE ? 'unix' : 'default',
