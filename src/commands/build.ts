@@ -144,6 +144,10 @@ const genericBuild = async (
       args: buildOptions,
       cwd: ENGINE_DIR,
       killOnError: true,
+      env: {
+        ACCEPTED_MAR_CHANNEL_IDS: dynamicConfig.get('brand') as string,
+        MAR_CHANNEL_ID: dynamicConfig.get('brand') as string,
+      },
     })
   ).success
 }
