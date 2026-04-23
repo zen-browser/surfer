@@ -147,7 +147,10 @@ async function importCertPatches(): Promise<Task> {
         cwd: ENGINE_DIR,
       })
       for (const file of brandingFiles) {
-        const brandName = file.split('/')[2]
+        const brandName =
+          process.platform === 'win32'
+            ? file.split('\\')[2]
+            : file.split('/')[2]
         files[
           `engine/browser/branding/${brandName}/branding.nsi` as keyof typeof files
         ] = [
