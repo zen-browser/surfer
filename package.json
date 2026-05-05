@@ -73,7 +73,7 @@
     "eslint-plugin-unicorn": "^44.0.2",
     "jest": "^30.3.0",
     "prettier": "^2.2.1",
-    "ts-jest": "^27.1.2",
+    "ts-jest": "^29.4.9",
     "typescript": "^4.1.3"
   }
 }
