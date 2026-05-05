@@ -247,6 +247,6 @@ export async function addAddonsToMozBuild(
       .map((addon) => addon.name)
       .sort()
       .map((addon) => `"${addon}"`)
-      .join(',')}]`
+      .join(',')}]\n`
   )
 }

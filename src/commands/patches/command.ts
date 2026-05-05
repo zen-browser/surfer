@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { existsSync } from 'node:fs'
 import glob from 'tiny-glob'
 
-import { ENGINE_DIR, PATCHES_DIR, SRC_DIR } from '../../constants'
+import { CONFIGS_DIR, ENGINE_DIR, PATCHES_DIR, SRC_DIR } from '../../constants'
 import * as gitPatch from './git-patch'
 import * as copyPatch from './copy-patches'
 import * as brandingPatch from './branding-patch'
@@ -39,6 +39,13 @@ function patchMethod<T extends IMelonPatch>(
 }
 
 function importMelonPatches(): Task {
+  if (!existsSync(CONFIGS_DIR)) {
+    return {
+      name: 'branding',
+      skip: () => true,
+      task: () => {},
+    }
+  }
   return patchMethod(
     'branding',
     [
@@ -71,6 +78,13 @@ function importMelonPatches(): Task {
 }
 
 async function importFolders(): Promise<Task> {
+  if (!existsSync(SRC_DIR)) {
+    return {
+      name: 'folder',
+      skip: () => true,
+      task: () => {},
+    }
+  }
   return patchMethod(
     'folder',
     await copyPatch.get(),
@@ -79,6 +93,13 @@ async function importFolders(): Promise<Task> {
 }
 
 async function importGitPatch(): Promise<Task> {
+  if (!existsSync(SRC_DIR)) {
+    return {
+      name: 'git',
+      skip: () => true,
+      task: () => {},
+    }
+  }
   let patches = await glob('**/*.patch', {
     filesOnly: true,
     cwd: SRC_DIR,

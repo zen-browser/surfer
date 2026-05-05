@@ -48,7 +48,7 @@ export const init = async (directory: Command | string): Promise<void> => {
   log.info('Initializing git, this may take some time')
 
   await configDispatch('git', {
-    args: ['init'],
+    args: ['init', '-b', 'main'],
     cwd: absoluteInitDirectory,
   })
 
@@ -73,6 +73,9 @@ export const init = async (directory: Command | string): Promise<void> => {
   })
 
   log.info('Committing...')
+
+  // An existing Git config will override this
+  process.env.EMAIL = 'git@zen-browser.app'
 
   await configDispatch('git', {
     args: ['commit', '-aqm', `"Firefox ${version}"`],
