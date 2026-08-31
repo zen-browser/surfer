@@ -67,7 +67,7 @@ export const copyManual = async (
   if (!gitignore.includes(getChunked(name).join('/')))
     appendToFileSync(
       resolve(ENGINE_DIR, '.gitignore'),
-      `\n${getChunked(name).join('/')}`
+      `${getChunked(name).join('/')}\n`
     )
 }
 
@@ -129,6 +129,7 @@ export async function get(): Promise<ICopyPatch[]> {
 }
 
 export async function apply({ src, name }: ICopyPatch): Promise<void> {
+  appendToFileSync(resolve(ENGINE_DIR, '.gitignore'), `\n`)
   for (const item of src) {
     await copyManual(item, name)
   }
