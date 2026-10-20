@@ -68,13 +68,24 @@ async function unpackFirefoxSource(name: string): Promise<void> {
   if (process.platform == 'darwin') {
     // GNU Tar doesn't come preinstalled on any MacOS machines, so we need to
     // check for it and ask for the user to install it if necessary
-    if (!commandExistsSync('gtar')) {
+    async function isGnuTar(exec: string): Promise<boolean> {
+      try {
+        const { stdout } = await execa(exec, ['--version'])
+        return stdout.includes('(GNU tar)')
+      } catch {
+        return false
+      }
+    }
+
+    if (await isGnuTar('gtar')) {
+      tarExec = 'gtar'
+    } else if (await isGnuTar('tar')) {
+      tarExec = 'tar'
+    } else {
       throw new Error(
         `GNU Tar is required to extract Firefox's source on MacOS. Please install it using the command |brew install gnu-tar| or |sudo port install gnutar| and try again`
       )
     }
-
-    tarExec = 'gtar'
   }
 
   log.info(`Unpacking ${resolve(MELON_TMP_DIR, name)} to ${ENGINE_DIR}`)

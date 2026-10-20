@@ -11,8 +11,8 @@ describe('getFFVersion', () => {
 
     getFFVersion()
 
-    expect(log).toBeCalled()
-    expect(log).toBeCalledWith('Not Specified')
+    expect(log).toHaveBeenCalled()
+    expect(log).toHaveBeenCalledWith('Not Specified')
 
     log.mockRestore()
   })
@@ -25,8 +25,8 @@ describe('getFFVersion', () => {
 
     getFFVersion()
 
-    expect(log).toBeCalled()
-    expect(log).toBeCalledWith('1.2.3')
+    expect(log).toHaveBeenCalled()
+    expect(log).toHaveBeenCalledWith('1.2.3')
 
     log.mockRestore()
   })

@@ -74,13 +74,13 @@ describe('getConfig', () => {
 
   it('Throws an error if there is invalid JSON', () => {
     writeFileSync(configPath, '{invalid json')
-    expect(() => getConfig()).toThrowError()
+    expect(() => getConfig()).toThrow()
     unlinkSync(configPath)
   })
 
   it('Throws an error if the product is invalid', () => {
     writeFileSync(configPath, '{"version": {"product": "invalid"}}')
-    expect(() => getConfig()).toThrowError()
+    expect(() => getConfig()).toThrow()
     unlinkSync(configPath)
   })
 })
